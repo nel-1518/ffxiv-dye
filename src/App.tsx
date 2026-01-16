@@ -113,17 +113,17 @@ function App() {
    * 根据得分显示评价
    */
   function getComment(gameoverScore: number) {
-    let com = '这是怎么回事？给你"亚拉戈西瓜"级好了？'
+    let com = '发生什么了？这也许是"大河狸"级？'
 
     switch (gameoverScore) {
       case 0:
-        com = '是、是零？天才！给你"莫莫拉·莫拉！！！"级。'
+        com = '是、是零？大概是"阳小灵"级。'
         break
       case 1:
       case 2:
       case 3:
       case 4:
-        com = '分数有些低，是"小松鼠"级……不如再试一次？'
+        com = '分数有些低，是"小松鼠"级。不如再试一次？'
         break
       case 5:
       case 6:
@@ -131,7 +131,7 @@ function App() {
         break
       case 7:
       case 8:
-        com = '稍加努力就能够达到的分数，是"青鸟"级。'
+        com = '稍加努力就能够达到的分数，是"青鸟"级，再仔细判断一下？'
         break
       case 9:
       case 10:
@@ -139,23 +139,23 @@ function App() {
         break
       case 11:
       case 12:
-        com = '不错的分数，你对染剂已经比较熟悉，是"长须小黑豹"级。'
+        com = '很不错的分数，你对染剂已经比较了解，是"长须小黑豹"级。'
         break
       case 13:
       case 14:
       case 15:
-        com = '是"叶小妖妖"级，你对染剂相当熟悉，经常关照染剂商人的生意。'
+        com = '你对染剂很熟悉，是"叶小妖妖"级，投影台一定是每天见面的好朋友！'
         break
       case 16:
       case 17:
-        com = '很高的分数，是"旅雀儿"级，你对染剂非常熟悉，天天见面的朋友里一定有投影台。'
+        com = '出、出现了，是"旅雀儿"级，你对染剂非常熟悉，染剂商人的生意一定离不开你！'
         break
       case 18:
       case 19:
-        com = '居然达到了"椒盐海豹"级，你的背包里应该塞满了染剂和幻象棱镜！'
+        com = '好、好厉害！居然是"椒盐海豹"级，你的背包里肯定塞满了各种颜色的染剂和幻象棱晶！'
         break
       case 20:
-        com = '好、好厉害，是满分！给你"纳夏猫"级，你用过的染剂已经可以堆满海都广场了吧！'
+        com = '满分！达到了"纳夏猫"级！你在无数绝妙搭配上用过的染剂，已经可以堆满整个海都广场了吧！'
         break
     }
     setComment(com)
@@ -201,8 +201,8 @@ function App() {
   return (
     <>
       <div style={start ? { display: 'none' } : { display: 'block' }}>
-        <h1>这是什么染剂</h1>
-        <h3>根据颜色选择染剂名称</h3>
+        <h1>染剂整理</h1>
+        <h3>看颜色选择染剂</h3>
         {played ?
           <div style={{ textAlign: 'center' }}>
             <p>总分：{score}</p>
@@ -217,7 +217,7 @@ function App() {
         }
         <div>
           <button onClick={() => gameStart()}>
-            {played ? '重新开始' : '开始'}
+            {played ? '重新挑战' : '使命开始'}
           </button>
         </div>
         {played ?
@@ -237,7 +237,7 @@ function App() {
       </div>
 
       <div style={start ? { display: 'block' } : { display: 'none' }}>
-        <h2>这是什么染剂</h2>
+        <h2>染剂整理</h2>
         <h3>剩余次数：{TURN - turn} / 得分：{score}</h3>
         <div className='color-container'>
           <div className='color-box' style={{ background: answer.color }}></div>
@@ -259,7 +259,15 @@ function App() {
           <div className='color-container'>
             <div className='color-box' style={{ background: modalColor.color }}></div>
           </div>
-          <p>{modalColor.name}</p>
+          <p>
+            <a 
+              href={`https://ff14.huijiwiki.com/wiki/物品:${modalColor.name}`} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'underline' }}
+            >
+            {modalColor.name}</a>
+          </p>
           <p>{modalColor.color}</p>
         </div>
       </Modal>
