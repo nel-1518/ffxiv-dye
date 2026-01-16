@@ -1,8 +1,8 @@
-# 这是什么染剂
+# 染剂整理
 
 一个根据颜色猜染剂名称的小游戏，染剂是最终幻想 XIV 中的染色道具
 
-地址：https://nel-desu.github.io/ffxiv-dye/
+地址：https://nel-1518.github.io/ffxiv-dye/
 
 > 其中染剂名称及色值数据来自[最终幻想 XIV 中文维基 - 染剂](https://ff14.huijiwiki.com/wiki/染剂)
 
@@ -18,9 +18,9 @@
 
 ![选项](./public/2.png)
 
-### 结束
+### 结果
 
-![计分](./public/3.png)
+![结果](./public/3.png)
 
 ### 查看颜色
 
