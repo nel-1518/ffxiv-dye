@@ -64,8 +64,14 @@
   opacity: 0.22;
   pointer-events: none;
   transition: border-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
-  animation: rotate-ring 60s linear infinite;
+  animation: rotate-ring 35s linear infinite;
+  animation-play-state: running;
   z-index: 0;
+}
+
+/* 暂停轮播时虚线环停止旋转 */
+.home-card[data-autoplay="paused"] .logo-badge-wrapper::before {
+  animation-play-state: paused;
 }
 
 @keyframes rotate-ring {
@@ -363,6 +369,42 @@
   box-shadow: 0 7px 28px rgba(0, 0, 0, 0.22);
   font-family: inherit;
   white-space: nowrap;
+}
+
+/* ========== 自动轮播开关 ========== */
+.autoplay-toggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0.8;
+  padding: 0;
+  line-height: 1;
+}
+
+@media (hover: hover) {
+  .autoplay-toggle:hover {
+    opacity: 1;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+  }
+}
+
+.autoplay-toggle:active {
+  transform: scale(0.9);
 }
 
 /* ========== 主题切换按钮 ========== */

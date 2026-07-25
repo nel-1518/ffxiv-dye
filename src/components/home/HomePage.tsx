@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import colorData from '../../data/colors.json'
 import type { Color } from '../../types/color'
@@ -9,11 +9,27 @@ import { useKeyboardNav } from '../../hooks/useKeyboardNav'
 import { useTouchSwipe } from '../../hooks/useTouchSwipe'
 import LogoBadge from './LogoBadge'
 import ColorStrip from './ColorStrip'
+import { PauseOutlined, CaretRightOutlined } from '@ant-design/icons'
+import { useAutoSwitch, getAutoPlayState, saveAutoPlayState } from '../../hooks/useAutoSwitch'
 
 function HomePage() {
   const navigate = useNavigate()
   const { resolvedTheme } = useTheme()
   const { currentScheme, currentIndex, switchNext, switchTo } = useScheme(schemes, resolvedTheme)
+
+  // 自动轮播状态
+  const [isAutoPlaying, setIsAutoPlaying] = useState(() => getAutoPlayState())
+
+  const toggleAutoPlay = useCallback(() => {
+    setIsAutoPlaying((prev) => {
+      const next = !prev
+      saveAutoPlayState(next)
+      return next
+    })
+  }, [])
+
+  // 自动轮播：每 3 秒切换一次配色
+  useAutoSwitch(switchNext, isAutoPlaying)
 
   // 构建 hex → dye 查询表
   const dyeMap = useMemo(() => {
@@ -45,8 +61,16 @@ function HomePage() {
   return (
     <>
       <div className="main-container">
-        <div className="home-card">
+        <div className="home-card" data-autoplay={isAutoPlaying ? 'running' : 'paused'}>
           <LogoBadge diamonds={currentScheme.diamonds} onSwitch={switchNext} />
+
+          <button
+            className="autoplay-toggle"
+            onClick={toggleAutoPlay}
+            title={isAutoPlaying ? '暂停自动切换' : '开始自动切换'}
+          >
+            {isAutoPlaying ? <PauseOutlined /> : <CaretRightOutlined />}
+          </button>
 
           <div className="brand-name">染剂整理</div>
           <div className="brand-tagline">色彩斑斓的世界</div>
