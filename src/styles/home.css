@@ -1,0 +1,569 @@
+/* ==================== CHROMA 首页样式 ====================
+ * 所有颜色/背景引用 CSS 变量，由 useScheme hook 动态设置
+ */
+
+/* ========== 容器 ========== */
+.main-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  max-width: 560px;
+}
+
+/* ========== 卡片 ========== */
+.home-card {
+  background: var(--color-card);
+  border-radius: 30px;
+  padding: 54px 44px 48px;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.03),
+    0 10px 36px rgba(0, 0, 0, 0.06),
+    0 24px 68px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  transition:
+    box-shadow var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: visible;
+}
+
+[data-theme='dark'] .home-card {
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 10px 36px rgba(0, 0, 0, 0.3),
+    0 24px 68px rgba(0, 0, 0, 0.25);
+}
+
+/* ========== LOGO 徽章包装器 ========== */
+.logo-badge-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 5;
+}
+
+/* 外圈虚线环 */
+.logo-badge-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  width: 172px;
+  height: 172px;
+  border-radius: 50%;
+  border: 1.8px dashed var(--color-ring);
+  opacity: 0.22;
+  pointer-events: none;
+  transition: border-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+  animation: rotate-ring 60s linear infinite;
+  z-index: 0;
+}
+
+@keyframes rotate-ring {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 提示文字 */
+.hint-text {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--color-text);
+  opacity: 0.28;
+  white-space: nowrap;
+  pointer-events: none;
+  transition:
+    color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
+}
+
+.logo-badge-wrapper:hover .hint-text {
+  opacity: 0.55;
+}
+
+/* 徽章主体 */
+.logo-badge {
+  width: 148px;
+  height: 148px;
+  border-radius: 50%;
+  border: 3px solid var(--color-ring);
+  position: relative;
+  background: transparent;
+  transition:
+    border-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 3px 18px rgba(0, 0, 0, 0.07), inset 0 0 0 5px rgba(255, 255, 255, 0.5);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.logo-badge:active {
+  transform: scale(0.94);
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========== 涟漪 ========== */
+.ripple-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.08);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple-expand 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+
+[data-theme='dark'] .ripple {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@keyframes ripple-expand {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.55; }
+  60%  { opacity: 0.25; }
+  100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+}
+
+/* ========== 圆形舞台 ========== */
+.circles-stage {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  isolation: isolate;
+  z-index: 3;
+}
+
+/* 单个圆形 */
+.blend-circle {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: var(--blend-mode, multiply);
+  cursor: pointer;
+  transition:
+    left var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    top var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    width var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    height var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    background-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    mix-blend-mode 0.25s ease;
+  will-change: left, top, width, height, background-color, transform;
+}
+
+.blend-circle:hover {
+  z-index: 100 !important;
+  mix-blend-mode: normal;
+  transform: scale(1.12);
+}
+
+.blend-circle::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2b2b2b;
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.blend-circle:hover::after {
+  opacity: 1;
+}
+
+.blend-circle.c0 { z-index: 1; }
+.blend-circle.c1 { z-index: 2; }
+.blend-circle.c2 { z-index: 3; }
+.blend-circle.c3 { z-index: 4; }
+.blend-circle.c4 { z-index: 5; }
+
+/* ========== 品牌文字 ========== */
+.brand-name {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  color: var(--color-text);
+  transition: color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1;
+  margin-bottom: 8px;
+  font-family: 'Georgia', 'Times New Roman', 'PingFang SC', 'Hiragino Sans GB', serif;
+  pointer-events: none;
+}
+
+.brand-tagline {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.20em;
+  color: var(--color-text);
+  opacity: 0.50;
+  transition: color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 30px;
+  pointer-events: none;
+}
+
+/* ========== 分割线 ========== */
+.divider {
+  width: 56px;
+  height: 2px;
+  background: var(--color-ring);
+  opacity: 0.32;
+  border-radius: 2px;
+  margin-bottom: 28px;
+  transition: background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/* ========== 色块展示 ========== */
+.color-strip {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.color-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  transition:
+    transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2.5px solid transparent;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.color-dot:hover {
+  transform: translateY(-5px) scale(1.14);
+  box-shadow: 0 9px 22px rgba(0, 0, 0, 0.16);
+  z-index: 10;
+}
+
+.color-dot:active {
+  transform: scale(0.9);
+  transition: transform 0.1s ease;
+}
+
+.color-dot::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: #2b2b2b;
+  color: #fff;
+  font-size: 13px;
+  padding: 5px 13px;
+  border-radius: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.24s ease, transform 0.24s ease;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+}
+
+.color-dot::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #2b2b2b;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.color-dot:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.color-dot:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.color-dot.copied-flash {
+  animation: dot-flash 0.5s ease;
+}
+
+@keyframes dot-flash {
+  0%, 100% { box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07); }
+  40% { box-shadow: 0 0 0 18px rgba(0, 0, 0, 0.08); }
+}
+
+/* ========== Toast ========== */
+.custom-toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(24px);
+  background: #2b2b2b;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 22px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  box-shadow: 0 7px 28px rgba(0, 0, 0, 0.22);
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+/* ========== 主题切换按钮 ========== */
+.theme-switcher {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+}
+
+.theme-switcher-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-ring);
+  background: var(--color-card);
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0.5;
+}
+
+.theme-switcher-btn:hover {
+  opacity: 1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+}
+
+.theme-switcher-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--color-card);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+  border: 1px solid var(--color-ring);
+  border-color: color-mix(in srgb, var(--color-ring) 12%, transparent);
+}
+
+.theme-switcher-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+  outline: none;
+}
+
+.theme-switcher-option:hover {
+  background: color-mix(in srgb, var(--color-ring) 6%, transparent);
+}
+
+.theme-switcher-option.active {
+  background: color-mix(in srgb, var(--color-ring) 10%, transparent);
+  font-weight: 600;
+}
+
+.theme-switcher-option-icon {
+  font-size: 14px;
+  display: inline-flex;
+}
+
+.theme-switcher-check {
+  margin-left: auto;
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+/* ========== 导航入口按钮（返回首页/去游戏） ========== */
+.nav-btn {
+  margin-top: 24px;
+  padding: 12px 32px;
+  border-radius: 26px;
+  border: 1.5px solid var(--color-ring);
+  background: color-mix(in srgb, var(--color-ring) 10%, var(--color-card));
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  opacity: 0.75;
+}
+
+.nav-btn:hover {
+  opacity: 1;
+  background: var(--color-ring);
+  color: white;
+  border-color: var(--color-ring);
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 600px) {
+  .home-card {
+    padding: 36px 22px 32px;
+    border-radius: 24px;
+  }
+  .logo-badge {
+    width: 122px;
+    height: 122px;
+    border-width: 2.8px;
+  }
+  .logo-badge-wrapper::before {
+    width: 142px;
+    height: 142px;
+    top: -10px;
+    left: -10px;
+    border-width: 1.5px;
+  }
+  .circles-stage {
+    width: 90px;
+    height: 90px;
+  }
+  .brand-name {
+    font-size: 28px;
+    letter-spacing: 0.20em;
+  }
+  .brand-tagline {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    margin-bottom: 22px;
+  }
+  .color-dot {
+    width: 29px;
+    height: 29px;
+  }
+  .color-strip {
+    gap: 7px;
+  }
+  .hint-text {
+    bottom: -19px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .home-card {
+    padding: 28px 14px 24px;
+    border-radius: 20px;
+  }
+  .logo-badge {
+    width: 100px;
+    height: 100px;
+    border-width: 2.5px;
+  }
+  .logo-badge-wrapper::before {
+    width: 118px;
+    height: 118px;
+    top: -9px;
+    left: -9px;
+    border-width: 1.3px;
+  }
+  .circles-stage {
+    width: 74px;
+    height: 74px;
+  }
+  .brand-name {
+    font-size: 22px;
+    letter-spacing: 0.15em;
+  }
+  .brand-tagline {
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    margin-bottom: 18px;
+  }
+  .color-dot {
+    width: 25px;
+    height: 25px;
+  }
+  .color-strip {
+    gap: 5px;
+  }
+  .hint-text {
+    bottom: -17px;
+    font-size: 9px;
+    letter-spacing: 0.10em;
+  }
+  .nav-btn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}

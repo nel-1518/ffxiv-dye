@@ -1,0 +1,121 @@
+/* ==================== 导航栏样式 ==================== */
+
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 16px;
+  background: color-mix(in srgb, var(--color-card) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ring) 10%, transparent);
+  transition:
+    background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    border-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 560px;
+}
+
+.nav-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-bar-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-bar-brand {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  transition: color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-bar-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link {
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.nav-link:hover {
+  opacity: 0.75;
+  background: color-mix(in srgb, var(--color-ring) 6%, transparent);
+}
+
+.nav-link.active {
+  opacity: 1;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--color-ring) 10%, transparent);
+}
+
+/* 响应式：窄屏时缩短间距 */
+@media (max-width: 480px) {
+  .nav-bar {
+    padding: 8px 12px;
+  }
+
+  .nav-bar-left {
+    gap: 12px;
+  }
+
+  .nav-bar-brand {
+    font-size: 13px;
+  }
+
+  .nav-link {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+/* 导航栏内主题切换按钮：移除 fixed 定位、边框、阴影 */
+.nav-bar .theme-switcher {
+  position: relative;
+  top: auto;
+  right: auto;
+}
+
+.nav-bar .theme-switcher-btn {
+  border: none;
+  box-shadow: none;
+  opacity: 0.6;
+  width: 34px;
+  height: 34px;
+  font-size: 15px;
+}
+
+.nav-bar .theme-switcher-btn:hover {
+  opacity: 1;
+  box-shadow: none;
+}

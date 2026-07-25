@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>CHROMA · 圆形抽象LOGO</title>
+    <style>
+        :root {
+            --color-d1: #E69F96;
+            --color-d2: #CC6C5E;
+            --color-d3: #FAC62B;
+            --color-d4: #F2D770;
+            --color-d5: #E49E34;
+            --color-ring: #451511;
+            --color-text: #1E1E1E;
+            --color-bg: #F9F8F4;
+            --color-card: #ffffff;
+            --color-subtle: #f0ebe3;
+            --transition-speed: 0.55s;
+            --circle-cx: 55px;
+            --circle-cy: 55px;
+            --c0-x: 48px;
+            --c0-y: 42px;
+            --c0-d: 50px;
+            --c1-x: 22px;
+            --c1-y: 38px;
+            --c1-d: 42px;
+            --c2-x: 42px;
+            --c2-y: 16px;
+            --c2-d: 38px;
+            --c3-x: 62px;
+            --c3-y: 50px;
+            --c3-d: 44px;
+            --c4-x: 30px;
+            --c4-y: 58px;
+            --c4-d: 36px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', -apple-system,
+                BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--color-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* 背景光晕 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            right: -200px;
+            width: 550px;
+            height: 550px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--color-d1) 0%, transparent 68%);
+            opacity: 0.10;
+            pointer-events: none;
+            transition: background var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -180px;
+            left: -180px;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--color-d3) 0%, transparent 68%);
+            opacity: 0.09;
+            pointer-events: none;
+            transition: background var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            width: 100%;
+            max-width: 560px;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--color-card);
+            border-radius: 30px;
+            padding: 50px 40px 42px;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.03),
+                0 10px 36px rgba(0, 0, 0, 0.06),
+                0 24px 68px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            width: 100%;
+            transition:
+                box-shadow var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1),
+                background var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: visible;
+        }
+        .card:hover {
+            box-shadow:
+                0 4px 14px rgba(0, 0, 0, 0.05),
+                0 14px 44px rgba(0, 0, 0, 0.08),
+                0 28px 76px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ========== LOGO 徽章包装器 ========== */
+        .logo-badge-wrapper {
+            position: relative;
+            margin-bottom: 24px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            z-index: 5;
+        }
+
+        /* 外圈虚线环 */
+        .logo-badge-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: 172px;
+            height: 172px;
+            border-radius: 50%;
+            border: 1.8px dashed var(--color-ring);
+            opacity: 0.22;
+            pointer-events: none;
+            transition: border-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            animation: rotate-ring 28s linear infinite;
+            z-index: 0;
+        }
+        @keyframes rotate-ring {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 徽章主体 */
+        .logo-badge {
+            width: 148px;
+            height: 148px;
+            border-radius: 50%;
+            border: 3px solid var(--color-ring);
+            position: relative;
+            background: #ffffff;
+            transition:
+                border-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1),
+                background var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 3px 18px rgba(0, 0, 0, 0.07), inset 0 0 0 5px #fefefd;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+        }
+        .logo-badge:active {
+            transform: scale(0.94);
+            transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 涟漪容器 */
+        .ripple-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.08);
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple-expand 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            pointer-events: none;
+            z-index: 10;
+        }
+        @keyframes ripple-expand {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0.55;
+            }
+            60% {
+                opacity: 0.25;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(3.5);
+                opacity: 0;
+            }
+        }
+
+        /* ========== 圆形图案容器 ========== */
+        .circles-stage {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            isolation: isolate;
+            z-index: 3;
+        }
+
+        /* 单个圆形 */
+        .blend-circle {
+            position: absolute;
+            border-radius: 50%;
+            mix-blend-mode: multiply;
+            cursor: pointer;
+            transition:
+                left var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1),
+                top var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1),
+                width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1),
+                height var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1),
+                background-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                mix-blend-mode 0.25s ease;
+            will-change: left, top, width, height, background-color, transform;
+        }
+        .blend-circle:hover {
+            z-index: 100 !important;
+            mix-blend-mode: normal;
+            transform: scale(1.12);
+        }
+        .blend-circle::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2b2b2b;
+            color: #fff;
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .blend-circle:hover::after {
+            opacity: 1;
+        }
+        .blend-circle.c0 {
+            z-index: 1;
+        }
+        .blend-circle.c1 {
+            z-index: 2;
+        }
+        .blend-circle.c2 {
+            z-index: 3;
+        }
+        .blend-circle.c3 {
+            z-index: 4;
+        }
+        .blend-circle.c4 {
+            z-index: 5;
+        }
+
+        /* ========== 品牌文字 ========== */
+        .brand-name {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.26em;
+            color: var(--color-text);
+            transition: color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 6px;
+            font-family: 'Georgia', 'Times New Roman', 'PingFang SC', 'Hiragino Sans GB', serif;
+            pointer-events: none;
+        }
+        .brand-tagline {
+            font-size: 11.5px;
+            font-weight: 400;
+            letter-spacing: 0.20em;
+            color: var(--color-text);
+            opacity: 0.50;
+            transition: color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 30px;
+            pointer-events: none;
+        }
+
+        /* 分割线 */
+        .divider {
+            width: 56px;
+            height: 2px;
+            background: var(--color-ring);
+            opacity: 0.32;
+            border-radius: 2px;
+            margin-bottom: 28px;
+            transition: background var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        /* 色块展示 */
+        .color-strip {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 26px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .color-dot {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition:
+                transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2.5px solid transparent;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .color-dot:hover {
+            transform: translateY(-5px) scale(1.14);
+            box-shadow: 0 9px 22px rgba(0, 0, 0, 0.16);
+            z-index: 10;
+        }
+        .color-dot:active {
+            transform: scale(0.9);
+            transition: transform 0.1s ease;
+        }
+        .color-dot::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            background: #2b2b2b;
+            color: #fff;
+            font-size: 11.5px;
+            padding: 5px 13px;
+            border-radius: 14px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.24s ease, transform 0.24s ease;
+            letter-spacing: 0.03em;
+            font-weight: 500;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+        }
+        .color-dot::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 4px);
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #2b2b2b;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.24s ease, transform 0.24s ease;
+        }
+        .color-dot:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .color-dot:hover::before {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .color-dot.copied-flash {
+            animation: dot-flash 0.5s ease;
+        }
+        @keyframes dot-flash {
+            0%,
+            100% {
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+            }
+            40% {
+                box-shadow: 0 0 0 18px rgba(0, 0, 0, 0.08);
+            }
+        }
+
+        /* 方案选择器 */
+        .scheme-label {
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--color-text);
+            opacity: 0.42;
+            margin-bottom: 15px;
+            transition: color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            pointer-events: none;
+        }
+        .scheme-selector {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .scheme-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            position: relative;
+            transition:
+                transform 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            background: transparent;
+            padding: 0;
+        }
+        .scheme-btn:hover {
+            transform: translateY(-5px) scale(1.10);
+            box-shadow: 0 11px 26px rgba(0, 0, 0, 0.17);
+        }
+        .scheme-btn:active {
+            transform: scale(0.88);
+            transition: transform 0.1s ease;
+        }
+        .scheme-btn.active {
+            border-color: var(--color-text);
+            box-shadow: 0 0 0 7px rgba(0, 0, 0, 0.05), 0 7px 18px rgba(0, 0, 0, 0.13);
+            transform: scale(1.09);
+        }
+        .scheme-btn .inner-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: background-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .scheme-btn::after {
+            content: attr(data-scheme-name);
+            position: absolute;
+            top: calc(100% + 11px);
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: #2b2b2b;
+            color: #fff;
+            font-size: 10.5px;
+            padding: 4px 11px;
+            border-radius: 12px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.24s ease, transform 0.24s ease;
+            letter-spacing: 0.03em;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        .scheme-btn:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 自动轮播按钮 */
+        .auto-play-btn {
+            margin-top: 24px;
+            padding: 10px 20px;
+            border-radius: 24px;
+            border: 1.5px solid var(--color-ring);
+            background: transparent;
+            color: var(--color-text);
+            cursor: pointer;
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.58;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        .auto-play-btn:hover {
+            opacity: 1;
+            background: var(--color-ring);
+            color: #fff;
+            border-color: var(--color-ring);
+        }
+        .auto-play-btn.playing {
+            opacity: 1;
+            background: var(--color-ring);
+            color: #fff;
+            border-color: var(--color-ring);
+            animation: pulse-glow 2.2s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.14);
+            }
+            50% {
+                box-shadow: 0 0 0 16px rgba(0, 0, 0, 0);
+            }
+        }
+        .auto-play-icon {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 7px 0 7px 13px;
+            border-color: transparent transparent transparent currentColor;
+            margin-left: 2px;
+        }
+        .pause-icon {
+            width: 5px;
+            height: 14px;
+            border-left: 4.5px solid currentColor;
+            border-right: 4.5px solid currentColor;
+            border-top: none;
+            border-bottom: none;
+            border-style: none;
+            display: inline-block;
+        }
+
+        /* Toast */
+        .custom-toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(24px);
+            background: #2b2b2b;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 22px;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            box-shadow: 0 7px 28px rgba(0, 0, 0, 0.22);
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        /* 提示：点击LOGO切换 */
+        .hint-text {
+            position: absolute;
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9.5px;
+            letter-spacing: 0.14em;
+            color: var(--color-text);
+            opacity: 0.28;
+            white-space: nowrap;
+            pointer-events: none;
+            transition: color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+        .logo-badge-wrapper:hover .hint-text {
+            opacity: 0.55;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 600px) {
+            .card {
+                padding: 36px 22px 32px;
+                border-radius: 24px;
+            }
+            .logo-badge {
+                width: 122px;
+                height: 122px;
+                border-width: 2.8px;
+            }
+            .logo-badge-wrapper::before {
+                width: 142px;
+                height: 142px;
+                top: -10px;
+                left: -10px;
+                border-width: 1.5px;
+            }
+            .circles-stage {
+                width: 90px;
+                height: 90px;
+            }
+            .brand-name {
+                font-size: 23px;
+                letter-spacing: 0.20em;
+            }
+            .brand-tagline {
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                margin-bottom: 22px;
+            }
+            .color-dot {
+                width: 29px;
+                height: 29px;
+            }
+            .scheme-btn {
+                width: 37px;
+                height: 37px;
+                border-width: 2.5px;
+            }
+            .scheme-selector {
+                gap: 10px;
+            }
+            .color-strip {
+                gap: 7px;
+            }
+            .hint-text {
+                bottom: -19px;
+                font-size: 8.5px;
+            }
+        }
+        @media (max-width: 380px) {
+            .card {
+                padding: 28px 14px 24px;
+                border-radius: 20px;
+            }
+            .logo-badge {
+                width: 100px;
+                height: 100px;
+                border-width: 2.5px;
+            }
+            .logo-badge-wrapper::before {
+                width: 118px;
+                height: 118px;
+                top: -9px;
+                left: -9px;
+                border-width: 1.3px;
+            }
+            .circles-stage {
+                width: 74px;
+                height: 74px;
+            }
+            .brand-name {
+                font-size: 18px;
+                letter-spacing: 0.15em;
+            }
+            .brand-tagline {
+                font-size: 8.5px;
+                letter-spacing: 0.10em;
+                margin-bottom: 18px;
+            }
+            .scheme-btn {
+                width: 31px;
+                height: 31px;
+                border-width: 2.2px;
+            }
+            .scheme-selector {
+                gap: 7px;
+            }
+            .color-dot {
+                width: 25px;
+                height: 25px;
+            }
+            .color-strip {
+                gap: 5px;
+            }
+            .auto-play-btn {
+                padding: 8px 14px;
+                font-size: 11px;
+                margin-top: 18px;
+            }
+            .hint-text {
+                bottom: -17px;
+                font-size: 7.5px;
+                letter-spacing: 0.10em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="card">
+            <!-- LOGO 徽章 -->
+            <div class="logo-badge-wrapper" id="logoBadgeWrapper" title="点击切换配色 & 图案">
+                <div class="logo-badge" id="logoBadge">
+                    <div class="ripple-container" id="rippleContainer"></div>
+                    <!-- 圆形抽象图案 -->
+                    <div class="circles-stage" id="circlesStage">
+                        <div class="blend-circle c0" id="bc0"></div>
+                        <div class="blend-circle c1" id="bc1"></div>
+                        <div class="blend-circle c2" id="bc2"></div>
+                        <div class="blend-circle c3" id="bc3"></div>
+                        <div class="blend-circle c4" id="bc4"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 品牌名称 -->
+            <div class="brand-name" id="brandName">CHROMA</div>
+            <div class="brand-tagline" id="brandTagline">色彩美学 · 圆形叠影</div>
+
+            <!-- 分割线 -->
+            <div class="divider" id="dividerEl"></div>
+
+            <!-- 当前方案色块 -->
+            <div class="color-strip" id="colorStrip"></div>
+
+            <!-- 方案标签 -->
+            <div class="scheme-label">配色方案</div>
+
+            <!-- 方案按钮 -->
+            <div class="scheme-selector" id="schemeSelector"></div>
+
+            <!-- 自动轮播 -->
+            <button class="auto-play-btn" id="autoPlayBtn" title="自动切换配色方案">
+                <span class="auto-play-icon play-icon" id="playIcon"></span>
+                <span id="autoPlayText">自动预览</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ==================== 配色方案定义 ====================
+            const schemes = [{
+                id: 'rose-gold',
+                name: '玫瑰金',
+                diamond1: '#E69F96',
+                diamond2: '#CC6C5E',
+                diamond3: '#FAC62B',
+                diamond4: '#F2D770',
+                diamond5: '#E49E34',
+                ring: '#451511',
+                text: '#1E1E1E',
+                bg: '#F9F8F4',
+                card: '#ffffff',
+                colors: [
+                    { hex: '#E69F96', name: '玫瑰粉染剂', type: '红' },
+                    { hex: '#CC6C5E', name: '珊瑚粉染剂', type: '红' },
+                    { hex: '#FAC62B', name: '蜂蜜黄染剂', type: '黄' },
+                    { hex: '#F2D770', name: '奶油黄染剂', type: '黄' },
+                    { hex: '#E49E34', name: '玉米黄染剂', type: '黄' },
+                ]
+            }, {
+                id: 'ocean',
+                name: '深海秘境',
+                diamond1: '#83B0D2',
+                diamond2: '#04AFCD',
+                diamond3: '#B2C4CE',
+                diamond4: '#6481A0',
+                diamond5: '#5B7FC0',
+                ring: '#312D57',
+                text: '#181937',
+                bg: '#e8eef5',
+                card: '#f7f9fc',
+                colors: [
+                    { hex: '#83B0D2', name: '天空蓝染剂', type: '蓝' },
+                    { hex: '#04AFCD', name: '松石蓝染剂', type: '蓝' },
+                    { hex: '#B2C4CE', name: '寒冰蓝染剂', type: '蓝' },
+                    { hex: '#6481A0', name: '海雾蓝染剂', type: '蓝' },
+                    { hex: '#5B7FC0', name: '盗龙蓝染剂', type: '蓝' },
+                ]
+            }, {
+                id: 'forest',
+                name: '森林低语',
+                diamond1: '#9BB363',
+                diamond2: '#BBBB8A',
+                diamond3: '#8B9C63',
+                diamond4: '#658241',
+                diamond5: '#ABB054',
+                ring: '#1E2A21',
+                text: '#323621',
+                bg: '#eef2e6',
+                card: '#fafcf7',
+                colors: [
+                    { hex: '#9BB363', name: '苹果绿染剂', type: '绿' },
+                    { hex: '#BBBB8A', name: '妖精绿染剂', type: '绿' },
+                    { hex: '#8B9C63', name: '牧草绿染剂', type: '绿' },
+                    { hex: '#658241', name: '仙人掌染剂', type: '绿' },
+                    { hex: '#ABB054', name: '青柠绿染剂', type: '绿' },
+                ]
+            }, {
+                id: 'purple-haze',
+                name: '紫罗兰梦',
+                diamond1: '#B79EBC',
+                diamond2: '#877FAE',
+                diamond3: '#DC9BCA',
+                diamond4: '#BBB5DA',
+                diamond5: '#62508F',
+                ring: '#3B2A3D',
+                text: '#322C3B',
+                bg: '#f2edf5',
+                card: '#fdfbfe',
+                colors: [
+                    { hex: '#B79EBC', name: '鸢尾紫染剂', type: '紫' },
+                    { hex: '#877FAE', name: '薰衣草染剂', type: '紫' },
+                    { hex: '#DC9BCA', name: '蜂鸟粉染剂', type: '紫' },
+                    { hex: '#BBB5DA', name: '柔彩紫染剂', type: '紫' },
+                    { hex: '#62508F', name: '罗兰紫染剂', type: '紫' },
+                ]
+            }, {
+                id: 'sunset',
+                name: '落日余晖',
+                diamond1: '#B75C2D',
+                diamond2: '#C57424',
+                diamond3: '#F2D770',
+                diamond4: '#E49E34',
+                diamond5: '#DBB457',
+                ring: '#451511',
+                text: '#2B2923',
+                bg: '#faf3e8',
+                card: '#fffdf9',
+                colors: [
+                    { hex: '#B75C2D', name: '日落橙染剂', type: '棕' },
+                    { hex: '#C57424', name: '南瓜橙染剂', type: '棕' },
+                    { hex: '#F2D770', name: '奶油黄染剂', type: '黄' },
+                    { hex: '#E49E34', name: '玉米黄染剂', type: '黄' },
+                    { hex: '#DBB457', name: '沙漠黄染剂', type: '黄' },
+                ]
+            }, {
+                id: 'graphite',
+                name: '石墨雅致',
+                diamond1: '#656565',
+                diamond2: '#898784',
+                diamond3: '#ACA8A2',
+                diamond4: '#484742',
+                diamond5: '#E4DFD0',
+                ring: '#1E1E1E',
+                text: '#1E1E1E',
+                bg: '#E4DFD0',
+                card: '#fcfbf8',
+                colors: [
+                    { hex: '#656565', name: '石板灰染剂', type: '灰' },
+                    { hex: '#898784', name: '古菩灰染剂', type: '灰' },
+                    { hex: '#ACA8A2', name: '苍白灰染剂', type: '灰' },
+                    { hex: '#484742', name: '木炭灰染剂', type: '灰' },
+                    { hex: '#E4DFD0', name: '素雪白染剂', type: '灰' },
+                ]
+            }, {
+                id: 'cherry-blossom',
+                name: '樱吹雪',
+                diamond1: '#FECEF5',
+                diamond2: '#F5379B',
+                diamond3: '#ED118E',
+                diamond4: '#FDC8C6',
+                diamond5: '#DE0B16',
+                ring: '#5B1729',
+                text: '#321919',
+                bg: '#fff5f8',
+                card: '#fffbfc',
+                colors: [
+                    { hex: '#FECEF5', name: '莲花粉染剂', type: '紫' },
+                    { hex: '#F5379B', name: '樱桃粉染剂', type: '红' },
+                    { hex: '#ED118E', name: '霓虹粉染剂', type: '红' },
+                    { hex: '#FDC8C6', name: '柔彩粉染剂', type: '红' },
+                    { hex: '#DE0B16', name: '胭脂红染剂', type: '红' },
+                ]
+            }, {
+                id: 'vintage',
+                name: '复古胶片',
+                diamond1: '#B9A489',
+                diamond2: '#A2875C',
+                diamond3: '#DBB457',
+                diamond4: '#C99156',
+                diamond5: '#92816C',
+                ring: '#3D290D',
+                text: '#30211B',
+                bg: '#f5efe4',
+                card: '#fdfaf5',
+                colors: [
+                    { hex: '#B9A489', name: '哥布林染剂', type: '棕' },
+                    { hex: '#A2875C', name: '山羊棕染剂', type: '棕' },
+                    { hex: '#DBB457', name: '沙漠黄染剂', type: '黄' },
+                    { hex: '#C99156', name: '软木棕染剂', type: '棕' },
+                    { hex: '#92816C', name: '页岩棕染剂', type: '棕' },
+                ]
+            }];
+
+            // ==================== DOM 引用 ====================
+            const root = document.documentElement;
+            const logoBadgeWrapper = document.getElementById('logoBadgeWrapper');
+            const logoBadge = document.getElementById('logoBadge');
+            const rippleContainer = document.getElementById('rippleContainer');
+            const circlesStage = document.getElementById('circlesStage');
+            const brandName = document.getElementById('brandName');
+            const brandTagline = document.getElementById('brandTagline');
+            const dividerEl = document.getElementById('dividerEl');
+            const colorStrip = document.getElementById('colorStrip');
+            const schemeSelector = document.getElementById('schemeSelector');
+            const autoPlayBtn = document.getElementById('autoPlayBtn');
+            const playIcon = document.getElementById('playIcon');
+            const autoPlayText = document.getElementById('autoPlayText');
+
+            // 圆形元素
+            const blendCircles = [
+                document.getElementById('bc0'),
+                document.getElementById('bc1'),
+                document.getElementById('bc2'),
+                document.getElementById('bc3'),
+                document.getElementById('bc4'),
+            ];
+
+            let currentSchemeIndex = 0;
+            let autoPlayInterval = null;
+            let isAutoPlaying = false;
+
+            // ==================== 圆形布局生成算法 ====================
+            function generateCircleLayout() {
+                // 容器中心 (110px 容器，中心在55px)
+                const cx = 55;
+                const cy = 55;
+
+                // 5个圆形的参数：{ x, y, diameter }
+                const circles = [];
+
+                // 圆形0 - 中心偏上的大圆
+                const c0_angle = Math.random() * Math.PI * 2;
+                const c0_dist = 5 + Math.random() * 10;
+                circles.push({
+                    x: cx + Math.cos(c0_angle) * c0_dist,
+                    y: cy + Math.sin(c0_angle) * c0_dist,
+                    d: 60 + Math.random() * 10, // 54-70px
+                });
+
+                // 圆形1-4 - 围绕中心分布
+                const baseAngles = [0, Math.PI * 0.48, Math.PI * 0.95, Math.PI * 1.55];
+                const angleJitter = (Math.random() - 0.5) * 2.45; // 角度抖动
+
+                for (let i = 0; i < 4; i++) {
+                    const angle = baseAngles[i] + angleJitter + Math.random() * 0.30;
+                    const dist = 20 + Math.random() * 14; // 14-34px 距中心距离
+                    const d = 40 + Math.random() * 20; // 40-60px 直径
+                    circles.push({
+                        x: cx + Math.cos(angle) * dist,
+                        y: cy + Math.sin(angle) * dist,
+                        d: d,
+                    });
+                }
+
+                // 微调确保所有圆形都在可视范围内（不超出容器太多）
+                const clampX = (v) => Math.max(-4, Math.min(114, v));
+                const clampY = (v) => Math.max(-4, Math.min(114, v));
+                circles.forEach(c => {
+                    c.x = clampX(c.x);
+                    c.y = clampY(c.y);
+                    c.d = Math.max(26, Math.min(72, c.d));
+                });
+
+                return circles;
+            }
+
+            // ==================== 应用圆形布局到DOM ====================
+            function applyCircleLayoutToDOM(layout) {
+                blendCircles.forEach((el, i) => {
+                    if (i < layout.length) {
+                        const c = layout[i];
+                        el.style.left = (c.x - c.d / 2) + 'px';
+                        el.style.top = (c.y - c.d / 2) + 'px';
+                        el.style.width = c.d + 'px';
+                        el.style.height = c.d + 'px';
+                    }
+                });
+            }
+
+            // ==================== 应用配色方案 ====================
+            function applyScheme(index) {
+                const scheme = schemes[index];
+                currentSchemeIndex = index;
+
+                // 更新CSS变量
+                root.style.setProperty('--color-d1', scheme.diamond1);
+                root.style.setProperty('--color-d2', scheme.diamond2);
+                root.style.setProperty('--color-d3', scheme.diamond3);
+                root.style.setProperty('--color-d4', scheme.diamond4);
+                root.style.setProperty('--color-d5', scheme.diamond5);
+                root.style.setProperty('--color-ring', scheme.ring);
+                root.style.setProperty('--color-text', scheme.text);
+                root.style.setProperty('--color-bg', scheme.bg);
+                root.style.setProperty('--color-card', scheme.card);
+
+                // 更新分割线
+                if (dividerEl) {
+                    dividerEl.style.background = scheme.ring;
+                }
+
+                // 更新圆形颜色（随机排列）
+                const colorEntries = [
+                    { hex: scheme.diamond1, name: scheme.colors[0].name },
+                    { hex: scheme.diamond2, name: scheme.colors[1].name },
+                    { hex: scheme.diamond3, name: scheme.colors[2].name },
+                    { hex: scheme.diamond4, name: scheme.colors[3].name },
+                    { hex: scheme.diamond5, name: scheme.colors[4].name },
+                ];
+                // Fisher-Yates 洗牌
+                for (let i = colorEntries.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [colorEntries[i], colorEntries[j]] = [colorEntries[j], colorEntries[i]];
+                }
+                blendCircles.forEach((el, i) => {
+                    if (i < colorEntries.length) {
+                        el.style.backgroundColor = colorEntries[i].hex;
+                        el.setAttribute('data-name', colorEntries[i].name);
+                    }
+                });
+
+                // 生成并应用圆形布局
+                const layout = generateCircleLayout();
+                applyCircleLayoutToDOM(layout);
+
+                // 更新色块展示
+                renderColorStrip(scheme);
+
+                // 更新方案按钮
+                renderSchemeButtons(index);
+            }
+
+            // ==================== 色块展示 ====================
+            function renderColorStrip(scheme) {
+                colorStrip.innerHTML = '';
+                scheme.colors.forEach((colorObj) => {
+                    const dot = document.createElement('span');
+                    dot.className = 'color-dot';
+                    dot.style.backgroundColor = colorObj.hex;
+                    dot.setAttribute('data-name', colorObj.name);
+                    dot.title = colorObj.name + ' (' + colorObj.type + '系)';
+                    dot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(colorObj.hex).then(() => {
+                            dot.classList.add('copied-flash');
+                            setTimeout(() => dot.classList.remove('copied-flash'), 500);
+                            showToast('已复制 ' + colorObj.hex + ' (' + colorObj.name + ')');
+                        }).catch(() => {
+                            showToast(colorObj.hex + ' — ' + colorObj.name);
+                        });
+                    });
+                    colorStrip.appendChild(dot);
+                });
+            }
+
+            // ==================== 方案按钮 ====================
+            function renderSchemeButtons(activeIndex) {
+                schemeSelector.innerHTML = '';
+                schemes.forEach((scheme, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'scheme-btn';
+                    if (i === activeIndex) {
+                        btn.classList.add('active');
+                    }
+                    btn.setAttribute('data-scheme-name', scheme.name);
+                    btn.setAttribute('aria-label', '切换到配色方案：' + scheme.name);
+                    btn.title = scheme.name;
+                    const innerCircle = document.createElement('div');
+                    innerCircle.className = 'inner-circle';
+                    innerCircle.style.backgroundColor = scheme.diamond1;
+                    btn.appendChild(innerCircle);
+
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (i !== currentSchemeIndex) {
+                            applyScheme(i);
+                            if (isAutoPlaying) resetAutoPlayTimer();
+                        }
+                    });
+                    schemeSelector.appendChild(btn);
+                });
+            }
+
+            // ==================== 涟漪效果 ====================
+            function createRipple(clientX, clientY, targetEl) {
+                const rect = targetEl.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
+
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.width = size * 0.45 + 'px';
+                ripple.style.height = size * 0.45 + 'px';
+                rippleContainer.appendChild(ripple);
+
+                ripple.addEventListener('animationend', () => {
+                    ripple.remove();
+                });
+            }
+
+            // ==================== LOGO点击处理 ====================
+            function handleLogoClick(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // 创建涟漪
+                createRipple(e.clientX, e.clientY, logoBadge);
+
+                // 切换到下一个配色
+                const nextIndex = (currentSchemeIndex + 1) % schemes.length;
+                applyScheme(nextIndex);
+
+                // 如果自动播放中，重置计时器
+                if (isAutoPlaying) {
+                    resetAutoPlayTimer();
+                }
+
+                // 短暂的触觉反馈模拟（视觉上的）
+                logoBadge.style.boxShadow = '0 1px 6px rgba(0,0,0,0.04), inset 0 0 0 5px #fefefd, 0 0 0 0px var(--color-ring)';
+                setTimeout(() => {
+                    logoBadge.style.boxShadow =
+                        '0 3px 18px rgba(0, 0, 0, 0.07), inset 0 0 0 5px #fefefd';
+                }, 180);
+            }
+
+            logoBadgeWrapper.addEventListener('click', handleLogoClick);
+            // 也监听logoBadge本身的点击
+            logoBadge.addEventListener('click', handleLogoClick);
+
+            // ==================== Toast ====================
+            function showToast(message) {
+                const existing = document.querySelector('.custom-toast');
+                if (existing) existing.remove();
+
+                const toast = document.createElement('div');
+                toast.className = 'custom-toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+
+                requestAnimationFrame(() => {
+                    toast.style.opacity = '1';
+                    toast.style.transform = 'translateX(-50%) translateY(0)';
+                });
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) translateY(-18px)';
+                    setTimeout(() => toast.remove(), 420);
+                }, 1900);
+            }
+
+            // ==================== 自动播放 ====================
+            function startAutoPlay() {
+                isAutoPlaying = true;
+                autoPlayBtn.classList.add('playing');
+                playIcon.className = 'auto-play-icon pause-icon';
+                autoPlayText.textContent = '停止预览';
+                autoPlayInterval = setInterval(() => {
+                    const nextIndex = (currentSchemeIndex + 1) % schemes.length;
+                    applyScheme(nextIndex);
+                }, 3000);
+            }
+
+            function stopAutoPlay() {
+                isAutoPlaying = false;
+                autoPlayBtn.classList.remove('playing');
+                playIcon.className = 'auto-play-icon play-icon';
+                autoPlayText.textContent = '自动预览';
+                if (autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                    autoPlayInterval = null;
+                }
+            }
+
+            function resetAutoPlayTimer() {
+                if (autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                    autoPlayInterval = setInterval(() => {
+                        const nextIndex = (currentSchemeIndex + 1) % schemes.length;
+                        applyScheme(nextIndex);
+                    }, 3000);
+                }
+            }
+
+            function toggleAutoPlay() {
+                if (isAutoPlaying) {
+                    stopAutoPlay();
+                } else {
+                    startAutoPlay();
+                }
+            }
+
+            autoPlayBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleAutoPlay();
+            });
+
+            // ==================== 键盘导航 ====================
+            document.addEventListener('keydown', (e) => {
+                // 忽略在输入框中的按键
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target
+                    .isContentEditable) {
+                    return;
+                }
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const nextIndex = (currentSchemeIndex + 1) % schemes.length;
+                    applyScheme(nextIndex);
+                    if (isAutoPlaying) resetAutoPlayTimer();
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prevIndex = (currentSchemeIndex - 1 + schemes.length) % schemes.length;
+                    applyScheme(prevIndex);
+                    if (isAutoPlaying) resetAutoPlayTimer();
+                } else if (e.key === ' ') {
+                    e.preventDefault();
+                    toggleAutoPlay();
+                } else if (e.key >= '1' && e.key <= '8') {
+                    const idx = parseInt(e.key) - 1;
+                    if (idx < schemes.length) {
+                        e.preventDefault();
+                        applyScheme(idx);
+                        if (isAutoPlaying) resetAutoPlayTimer();
+                    }
+                }
+            });
+
+            // ==================== 触摸滑动支持 ====================
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchOnLogo = false;
+
+            logoBadgeWrapper.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchOnLogo = true;
+            }, { passive: true });
+
+            document.addEventListener('touchstart', (e) => {
+                if (!touchOnLogo) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchend', (e) => {
+                const dx = (e.changedTouches[0]?.clientX || touchStartX) - touchStartX;
+                const dy = (e.changedTouches[0]?.clientY || touchStartY) - touchStartY;
+                const absDx = Math.abs(dx);
+                const absDy = Math.abs(dy);
+
+                // 如果触摸在LOGO上且移动很小，由click处理
+                if (touchOnLogo && absDx < 12 && absDy < 12) {
+                    touchOnLogo = false;
+                    return;
+                }
+                touchOnLogo = false;
+
+                if (Math.max(absDx, absDy) > 45 && absDx > absDy) {
+                    if (dx < -35) {
+                        const nextIndex = (currentSchemeIndex + 1) % schemes.length;
+                        applyScheme(nextIndex);
+                        if (isAutoPlaying) resetAutoPlayTimer();
+                    } else if (dx > 35) {
+                        const prevIndex = (currentSchemeIndex - 1 + schemes.length) % schemes.length;
+                        applyScheme(prevIndex);
+                        if (isAutoPlaying) resetAutoPlayTimer();
+                    }
+                }
+            });
+
+            // ==================== 初始化 ====================
+            function init() {
+                applyScheme(0);
+                console.log('🎨 CHROMA · 圆形抽象LOGO 已就绪');
+                console.log('  点击LOGO图案 → 切换配色 + 随机图案造型');
+                console.log('  ← → 方向键切换 | 空格键自动播放 | 数字键1-' + schemes.length + ' 快速切换');
+                console.log('  悬停色块查看名称 | 点击色块复制颜色值');
+                console.log('  圆形交叠使用 CSS mix-blend-mode: multiply (正片叠底)');
+            }
+
+            init();
+        })();
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import { Color } from "./type/Color"
+import { Color } from "../../types/color"
 
 export class Option {
 
