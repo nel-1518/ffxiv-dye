@@ -11,6 +11,16 @@ const TURN = 20
 // 保存全部答案
 const allAnswers = new Answers()
 
+/**
+ * 打乱数组（纯函数）
+ */
+function shuffleArray<T>(array: T[]) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
 function App() {
   // 所有染剂数据
   const [colors] = useState(colorData as Array<Color>)
@@ -169,34 +179,7 @@ function App() {
     setIsModalOpen(true)
   }
 
-  function random(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1))
-  }
 
-  /**
-   * 打乱数组
-   */
-  function shuffleArray<T>(array: T[]) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
-
-  function getArrayItems(arr: Array<Color>, num: number) {
-    const tempArray = [...arr]
-    const returnArray = []
-    for (let i = 0; i < num; i++) {
-      if (tempArray.length > 0) {
-        const arrIndex = Math.floor(Math.random() * tempArray.length)
-        returnArray[i] = tempArray[arrIndex]
-        tempArray.splice(arrIndex, 1)
-      } else {
-        break
-      }
-    }
-    return returnArray
-  }
 
   return (
     <>
