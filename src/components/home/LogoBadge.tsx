@@ -11,7 +11,7 @@ function LogoBadge({ diamonds, onSwitch }: LogoBadgeProps) {
   const badgeRef = useRef<HTMLDivElement>(null)
 
   const handleClick = useCallback(
-    (e: React.MouseEvent) => {
+    (_e: React.MouseEvent) => {
       onSwitch()
 
       // 触觉反馈

@@ -1,10 +1,11 @@
+import type { ReactElement } from 'react'
+
 interface ColorDotProps {
   hex: string
   name: string
-  dye: string
 }
 
-function ColorDot({ hex, name, dye }: ColorDotProps) {
+function ColorDot({ hex, name }: ColorDotProps): ReactElement {
   return (
     <span
       className="color-dot"

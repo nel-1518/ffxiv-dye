@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, type ReactNode } from 'react'
 import { SyncOutlined, SunOutlined, MoonOutlined } from '@ant-design/icons'
 import type { ThemeMode, ResolvedTheme } from '../../hooks/useTheme'
 
@@ -8,13 +8,13 @@ interface ThemeSwitcherProps {
   onChange: (mode: ThemeMode) => void
 }
 
-const options: { label: string; value: ThemeMode; icon: JSX.Element }[] = [
+const options: { label: string; value: ThemeMode; icon: ReactNode }[] = [
   { label: '跟随系统', value: 'system', icon: <SyncOutlined /> },
   { label: '浅色', value: 'light', icon: <SunOutlined /> },
   { label: '深色', value: 'dark', icon: <MoonOutlined /> },
 ]
 
-const iconMap: Record<ResolvedTheme, JSX.Element> = {
+const iconMap: Record<ResolvedTheme, ReactNode> = {
   dark: <MoonOutlined />,
   light: <SunOutlined />,
 }

@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { Button, Tabs, Spin, message, Tooltip } from 'antd'
+import { Button, Tabs, Spin, message } from 'antd'
 import {
   ReloadOutlined,
   UploadOutlined,
@@ -86,7 +86,6 @@ function ExtractPage() {
   const runExtraction = useCallback(async (
     labPixels: LabPixel[],
     effectiveK: number,
-    showMsg: boolean,
   ) => {
     const algo = getAlgorithm(algorithmKey)
     if (!algo) return
@@ -103,9 +102,6 @@ function ExtractPage() {
     try {
       const res = algo.fn(labPixels, params, cachedImageRef.current ?? undefined)
       setResult(res)
-      if (showMsg && res.palette.length > 0) {
-        message.success(`提取到 ${res.palette.length} 种颜色`)
-      }
       const pixelCount = res.palette.reduce((s, c) => s + c.count, 0)
       const logParts = [
         `基于 ${pixelCount.toLocaleString()} 像素`,
@@ -136,7 +132,7 @@ function ExtractPage() {
       if (algorithmKey === 'colorthief') {
         const labPixels: LabPixel[] = []
         cachedLabPixels.current = labPixels
-        await runExtraction(labPixels, 0, true)
+        await runExtraction(labPixels, 0)
         setLoading(false)
         return
       }
@@ -162,7 +158,7 @@ function ExtractPage() {
       const labPixels = pixelsToLab(pixels)
       cachedLabPixels.current = labPixels
 
-      await runExtraction(labPixels, k, true)
+      await runExtraction(labPixels, k)
     } catch (err) {
       console.error(err)
       message.error('图片处理出错，请重试')
@@ -183,7 +179,7 @@ function ExtractPage() {
     if (algorithmKey === 'colorthief') {
       const labPixels: LabPixel[] = []
       cachedLabPixels.current = labPixels
-      await runExtraction(labPixels, 0, true)
+      await runExtraction(labPixels, 0)
       setLoading(false)
       return
     }
@@ -202,7 +198,7 @@ function ExtractPage() {
       setHistogramInfo(null)
     }
 
-    await runExtraction(cachedLabPixels.current!, k, true)
+    await runExtraction(cachedLabPixels.current!, k)
     setLoading(false)
   }, [dynamicK, initialK, runExtraction, setLoading, setResult, setHistogramInfo])
 
@@ -269,7 +265,7 @@ function ExtractPage() {
     if (dynamicK && histogramInfo) {
       k = histogramInfo.k
     }
-    runExtraction(cachedLabPixels.current, k, false)
+    runExtraction(cachedLabPixels.current, k)
   }, [algorithmKey, dynamicK, initialK, histogramInfo, runExtraction])
 
   useEffect(() => {
@@ -370,7 +366,7 @@ function ExtractPage() {
                     onMergeThresholdChange={setMergeThreshold}
                     onFilterExtremeChange={setFilterExtreme}
                     onRunExtraction={(k) => {
-                      if (cachedLabPixels.current) runExtraction(cachedLabPixels.current, k, false)
+                      if (cachedLabPixels.current) runExtraction(cachedLabPixels.current, k)
                     }}
                     onAutoExtract={autoExtract}
                   />
@@ -381,7 +377,6 @@ function ExtractPage() {
 
           {/* 操作按钮 */}
           <div className="extract-actions">
-            <Tooltip title="重新提取颜色">
               <Button
                 type="primary"
                 icon={<ReloadOutlined />}
@@ -390,16 +385,13 @@ function ExtractPage() {
               >
                 提取颜色
               </Button>
-            </Tooltip>
             {result && result.palette.length > 0 && (
-              <Tooltip title={viewMode === 'palette' ? '查看染剂匹配' : '查看调色板'}>
-                <Button
-                  icon={<SwapOutlined />}
-                  onClick={() => setViewMode(v => v === 'palette' ? 'dye' : 'palette')}
-                >
-                  {viewMode === 'palette' ? '染剂匹配' : '调色板'}
-                </Button>
-              </Tooltip>
+              <Button
+                icon={<SwapOutlined />}
+                onClick={() => setViewMode(v => v === 'palette' ? 'dye' : 'palette')}
+              >
+                {viewMode === 'palette' ? '染剂匹配' : '调色板'}
+              </Button>
             )}
             <Button icon={<ReloadOutlined />} onClick={handleReset}>
               重置

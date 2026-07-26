@@ -79,7 +79,7 @@ function HomePage() {
           </button>
 
           <button className="nav-btn" onClick={() => navigate('/game')}>
-            猜染剂小游戏
+            小游戏 · 猜染剂
           </button>
         </div>
       </div>

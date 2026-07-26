@@ -178,12 +178,10 @@ export default function DyeMatchView({ palette }: DyeMatchViewProps) {
                 <div
                   className="dye-match-swatch"
                   style={{ background: m.extracted.hex, color: textColor }}
-                >
-                  <span>{m.extracted.percentage.toFixed(1)}%</span>
-                </div>
+                />
                 <div className="dye-match-label">
                   <span className="dye-match-hex">{m.extracted.hex}</span>
-                  <span className="dye-match-delta">ΔE {m.deltaE.toFixed(1)}</span>
+                  <span className="dye-match-delta">{m.extracted.percentage.toFixed(1)}%</span>
                 </div>
               </div>
             )
@@ -192,7 +190,7 @@ export default function DyeMatchView({ palette }: DyeMatchViewProps) {
 
         {/* ===== 右列：染剂 ===== */}
         <div className="dye-match-column dye-match-right">
-          <div className="dye-match-column-header">匹配染剂</div>
+          <div className="dye-match-column-header">染剂颜色</div>
           {deduplicatedRight(matches).map(m => {
             const lum = relativeLuminance2(m.dye.hex)
             const textColor = lum > 0.45 ? '#1a1a2e' : '#ffffff'

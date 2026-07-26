@@ -6,7 +6,7 @@ interface ColorStripProps {
   dyeMap: Record<string, string>
 }
 
-function ColorStrip({ diamonds, dyeMap }: ColorStripProps) {
+function ColorStrip({ diamonds }: ColorStripProps) {
   return (
     <div className="color-strip">
       {diamonds.map((d, i) => (
@@ -14,7 +14,6 @@ function ColorStrip({ diamonds, dyeMap }: ColorStripProps) {
           key={i}
           hex={d.hex}
           name={d.name}
-          dye={dyeMap[d.hex] ?? d.name}
         />
       ))}
     </div>
