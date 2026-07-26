@@ -4,6 +4,7 @@ import {
   ReloadOutlined,
   UploadOutlined,
   PictureOutlined,
+  SwapOutlined,
 } from '@ant-design/icons'
 import { useTheme } from '../../hooks/useTheme'
 import { getAlgorithmList, getAlgorithm } from '../../utils/algorithms'
@@ -12,16 +13,10 @@ import { extractPixelsFromImage, pixelsToLab } from '../../utils/algorithms/colo
 import { computeDynamicK } from '../../utils/algorithms/dynamicK'
 import ColorThiefPanel from './ColorThiefPanel'
 import KMeansPanel from './KMeansPanel'
+import PaletteGrid from './PaletteGrid'
+import DyeMatchView from './DyeMatchView'
 
 /* ===== 工具 ===== */
-
-function relativeLuminance(r: number, g: number, b: number): number {
-  const sr = (c: number) => {
-    c /= 255
-    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
-  }
-  return 0.2126 * sr(r) + 0.7152 * sr(g) + 0.0722 * sr(b)
-}
 
 function loadImageFromFile(file: File): Promise<{ img: HTMLImageElement; dataUrl: string }> {
   return new Promise((resolve, reject) => {
@@ -35,6 +30,17 @@ function loadImageFromFile(file: File): Promise<{ img: HTMLImageElement; dataUrl
     reader.onerror = () => reject(new Error('文件读取失败'))
     reader.readAsDataURL(file)
   })
+}
+
+function fallbackCopy(text: string) {
+  const ta = document.createElement('textarea')
+  ta.value = text
+  ta.style.position = 'fixed'
+  ta.style.opacity = '0'
+  document.body.appendChild(ta)
+  ta.select()
+  document.execCommand('copy')
+  document.body.removeChild(ta)
 }
 
 /* ===== 主组件 ===== */
@@ -71,6 +77,9 @@ function ExtractPage() {
 
   // 结果
   const [result, setResult] = useState<ExtractResult | null>(null)
+
+  // 视图切换
+  const [viewMode, setViewMode] = useState<'palette' | 'dye'>('dye')
 
   /* ---------- 图片处理 ---------- */
 
@@ -240,6 +249,7 @@ function ExtractPage() {
     setImageLoaded(false)
     setResult(null)
     setHistogramInfo(null)
+    setViewMode('dye')
     setDynamicK(true)
     setInitialK(10)
     setMergeMode('target')
@@ -249,7 +259,7 @@ function ExtractPage() {
     setQuality(10)
     setAlgorithmKey(algorithms[0]?.key ?? 'colorthief')
     message.success('已重置')
-  }, [algorithms, setImageDataUrl, setImageLoaded, setResult, setHistogramInfo, setDynamicK, setInitialK, setMergeMode, setTargetCount, setMergeThreshold, setFilterExtreme, setQuality, setAlgorithmKey])
+  }, [algorithms, setImageDataUrl, setImageLoaded, setResult, setHistogramInfo, setViewMode, setDynamicK, setInitialK, setMergeMode, setTargetCount, setMergeThreshold, setFilterExtreme, setQuality, setAlgorithmKey])
 
   /* ---------- 参数变更自动重新提取 ---------- */
 
@@ -272,10 +282,12 @@ function ExtractPage() {
   /* ---------- 复制 ---------- */
 
   const copyColor = useCallback((hex: string) => {
-    navigator.clipboard?.writeText(hex).then(
-      () => message.success(`已复制 ${hex}`),
-      () => message.error('复制失败'),
-    )
+    message.success(`已复制 ${hex}`)
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(hex).catch(() => fallbackCopy(hex))
+    } else {
+      fallbackCopy(hex)
+    }
   }, [])
 
   /* ---------- 渲染 ---------- */
@@ -379,6 +391,16 @@ function ExtractPage() {
                 提取颜色
               </Button>
             </Tooltip>
+            {result && result.palette.length > 0 && (
+              <Tooltip title={viewMode === 'palette' ? '查看染剂匹配' : '查看调色板'}>
+                <Button
+                  icon={<SwapOutlined />}
+                  onClick={() => setViewMode(v => v === 'palette' ? 'dye' : 'palette')}
+                >
+                  {viewMode === 'palette' ? '染剂匹配' : '调色板'}
+                </Button>
+              </Tooltip>
+            )}
             <Button icon={<ReloadOutlined />} onClick={handleReset}>
               重置
             </Button>
@@ -387,42 +409,9 @@ function ExtractPage() {
 
         {/* ===== 结果展示 ===== */}
         {result && result.palette.length > 0 && (
-          <div className="extract-results">
-            <div className="extract-palette-grid">
-              {result.palette.map((color, idx) => {
-                const lum = relativeLuminance(color.r, color.g, color.b)
-                const textColor = lum > 0.45 ? '#1a1a2e' : '#ffffff'
-                return (
-                  <div
-                    key={idx}
-                    className="extract-color-card"
-                    onClick={() => copyColor(color.hex)}
-                  >
-                    <div
-                      className="extract-color-swatch"
-                      style={{ background: color.hex, color: textColor }}
-                    >
-                      <span className="extract-color-percentage">
-                        {color.percentage.toFixed(1)}%
-                      </span>
-                    </div>
-                    <div className="extract-color-info">
-                      <div className="extract-color-hex">{color.hex}</div>
-                      <div className="extract-color-rgb">
-                        RGB({color.r}, {color.g}, {color.b})
-                      </div>
-                      <div className="extract-color-bar">
-                        <div
-                          className="extract-color-bar-fill"
-                          style={{ width: `${color.percentage}%`, background: color.hex }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+          viewMode === 'palette'
+            ? <PaletteGrid palette={result.palette} onCopyColor={copyColor} />
+            : <DyeMatchView palette={result.palette} />
         )}
       </div>
 

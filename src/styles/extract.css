@@ -434,3 +434,291 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ========== 染剂匹配视图 ========== */
+
+.dye-match-container {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 24px;
+  background: var(--color-card);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.03),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+  transition:
+    background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='dark'] .dye-match-container {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dye-match-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 中间分隔线 */
+.dye-match-container::after {
+  content: '';
+  position: absolute;
+  top: 12%;
+  bottom: 12%;
+  left: 50%;
+  width: 1px;
+  background: color-mix(in srgb, var(--color-ring) 15%, transparent);
+  z-index: 0;
+  border-radius: 1px;
+}
+
+/* ===== 列 ===== */
+
+.dye-match-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 2;
+  /* 左右各占一半，条目推向外侧 */
+}
+
+.dye-match-left {
+  align-items: flex-start;
+  padding-left: 12px;
+}
+
+.dye-match-right {
+  align-items: flex-end;
+  padding-right: 12px;
+}
+
+/* ===== 列头标签 ===== */
+
+.dye-match-column-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text);
+  opacity: 0.4;
+  padding: 0 0 4px 0;
+  margin-bottom: 2px;
+  width: 100%;
+}
+
+.dye-match-left .dye-match-column-header {
+  text-align: left;
+  padding-left: 14px;
+}
+
+.dye-match-right .dye-match-column-header {
+  text-align: right;
+  padding-right: 14px;
+}
+
+/* ===== 条目 ===== */
+
+.dye-match-left-item,
+.dye-match-right-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.2s ease;
+  position: relative;
+  min-width: 120px;
+}
+
+/* 左列条目：色块在右侧（面向中心），文字在左侧右对齐 */
+.dye-match-left-item {
+  flex-direction: row-reverse;
+  text-align: right;
+  padding-right: 0;
+}
+
+/* 左列标签固定宽度，保证所有左列条目对齐 */
+.dye-match-left-item .dye-match-label {
+  width: 80px;
+  max-width: 80px;
+}
+
+/* 右列条目：色块在左侧（面向中心），文字在右侧左对齐 */
+.dye-match-right-item {
+  flex-direction: row;
+  text-align: left;
+  padding-left: 0;
+}
+
+.dye-match-left-item:hover,
+.dye-match-right-item:hover {
+  background: color-mix(in srgb, var(--color-ring) 6%, transparent);
+  transform: scale(1.03);
+}
+
+.dye-match-hovered {
+  background: color-mix(in srgb, var(--color-ring) 12%, transparent) !important;
+  transform: scale(1.04) !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 0 0 1px color-mix(in srgb, var(--color-ring) 20%, transparent);
+}
+
+[data-theme='dark'] .dye-match-hovered {
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 0 0 1px color-mix(in srgb, var(--color-ring) 30%, transparent);
+}
+
+/* ===== 色块 ===== */
+
+.dye-match-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.dye-match-hovered .dye-match-swatch {
+  transform: scale(1.08);
+}
+
+/* ===== 标签文字 ===== */
+
+.dye-match-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dye-match-left .dye-match-label {
+  align-items: flex-end;
+}
+
+.dye-match-right .dye-match-label {
+  align-items: flex-start;
+}
+
+.dye-match-hex {
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: var(--color-text);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.dye-match-delta {
+  font-size: 0.72rem;
+  color: var(--color-text);
+  opacity: 0.45;
+  font-variant-numeric: tabular-nums;
+}
+
+.dye-match-name {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.dye-match-type {
+  font-size: 0.72rem;
+  color: var(--color-text);
+  opacity: 0.4;
+}
+
+/* ===== 响应式 ===== */
+
+@media (max-width: 600px) {
+  .dye-match-container {
+    gap: 12px;
+    padding: 20px 10px;
+  }
+
+  .dye-match-left {
+    padding-left: 4px;
+  }
+
+  .dye-match-right {
+    padding-right: 4px;
+  }
+
+  .dye-match-left .dye-match-column-header {
+    padding-left: 10px;
+  }
+
+  .dye-match-right .dye-match-column-header {
+    padding-right: 10px;
+  }
+
+  .dye-match-swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 0.68rem;
+  }
+
+  .dye-match-left-item,
+  .dye-match-right-item {
+    padding: 6px 10px;
+    gap: 8px;
+    min-width: 90px;
+  }
+
+  .dye-match-hex,
+  .dye-match-name {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .dye-match-container {
+    gap: 8px;
+    padding: 14px 6px;
+  }
+
+  .dye-match-left {
+    padding-left: 0;
+  }
+
+  .dye-match-right {
+    padding-right: 0;
+  }
+
+  .dye-match-swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+  }
+
+  .dye-match-left-item,
+  .dye-match-right-item {
+    padding: 5px 8px;
+    gap: 6px;
+    min-width: 70px;
+  }
+}
