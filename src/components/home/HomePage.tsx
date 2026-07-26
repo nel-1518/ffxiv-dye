@@ -40,11 +40,6 @@ function HomePage() {
     return map
   }, [])
 
-  // 打开 wiki 页面
-  const handleOpenWiki = useCallback((dye: string) => {
-    window.open(`https://ff14.huijiwiki.com/wiki/物品:${encodeURIComponent(dye)}`, '_blank')
-  }, [])
-
   // 主题切换时重新应用当前方案的 CSS 变量
   useEffect(() => {
     reapplyScheme(currentScheme, resolvedTheme)
@@ -73,14 +68,14 @@ function HomePage() {
           </button>
 
           <div className="brand-name">染剂整理</div>
-          <div className="brand-tagline">色彩斑斓的世界</div>
+          <div className="brand-tagline">世界的斑斓色彩</div>
 
           <div className="divider" />
 
-          <ColorStrip diamonds={currentScheme.diamonds} dyeMap={dyeMap} onOpenWiki={handleOpenWiki} />
+          <ColorStrip diamonds={currentScheme.diamonds} dyeMap={dyeMap} />
 
           <button className="nav-btn" onClick={() => navigate('/game')}>
-            小游戏 · 猜颜色
+            小游戏 · 猜染剂
           </button>
         </div>
       </div>

@@ -4,10 +4,9 @@ import ColorDot from './ColorDot'
 interface ColorStripProps {
   diamonds: SchemeDiamond[]
   dyeMap: Record<string, string>
-  onOpenWiki: (dye: string) => void
 }
 
-function ColorStrip({ diamonds, dyeMap, onOpenWiki }: ColorStripProps) {
+function ColorStrip({ diamonds, dyeMap }: ColorStripProps) {
   return (
     <div className="color-strip">
       {diamonds.map((d, i) => (
@@ -16,7 +15,6 @@ function ColorStrip({ diamonds, dyeMap, onOpenWiki }: ColorStripProps) {
           hex={d.hex}
           name={d.name}
           dye={dyeMap[d.hex] ?? d.name}
-          onOpenWiki={onOpenWiki}
         />
       ))}
     </div>
