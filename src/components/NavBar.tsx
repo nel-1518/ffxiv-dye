@@ -10,6 +10,7 @@ interface NavBarProps {
 
 const links = [
   { path: '/', label: '主页' },
+  { path: '/grab', label: '色彩提取' },
   { path: '/game', label: '小游戏' },
 ]
 

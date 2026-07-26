@@ -74,8 +74,12 @@ function HomePage() {
 
           <ColorStrip diamonds={currentScheme.diamonds} dyeMap={dyeMap} />
 
+          <button className="nav-btn" onClick={() => navigate('/grab')}>
+            图片颜色提取
+          </button>
+
           <button className="nav-btn" onClick={() => navigate('/game')}>
-            小游戏 · 猜染剂
+            猜染剂小游戏
           </button>
         </div>
       </div>

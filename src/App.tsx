@@ -7,10 +7,12 @@ import { schemes } from './data/schemes'
 import NavBar from './components/NavBar'
 import HomePage from './components/home/HomePage'
 import GamePage from './components/game/GamePage'
+import ExtractPage from './components/extract/ExtractPage'
 import './App.css'
 import './styles/home.css'
 import './styles/game.css'
 import './styles/navbar.css'
+import './styles/extract.css'
 
 function AppContent() {
   const { mode, setMode, resolvedTheme } = useTheme()
@@ -33,6 +35,7 @@ function AppContent() {
       <div className="page-content">
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/grab" element={<ExtractPage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
