@@ -19,24 +19,14 @@
 
 .game-card {
   background: var(--color-card);
-  border-radius: 30px;
+  border-radius: var(--radius-card-lg);
   padding: 60px 44px 48px;
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.03),
-    0 10px 36px rgba(0, 0, 0, 0.06),
-    0 24px 68px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card-lg);
   width: 100%;
   transition:
     box-shadow var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
     background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-}
-
-[data-theme="dark"] .game-card {
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    0 10px 36px rgba(0, 0, 0, 0.3),
-    0 24px 68px rgba(0, 0, 0, 0.25);
 }
 
 /* ========== 返回按钮 ========== */

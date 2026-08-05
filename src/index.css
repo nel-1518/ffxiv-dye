@@ -12,14 +12,57 @@
 
 html {
   -webkit-tap-highlight-color: transparent;
+  background-color: var(--color-bg);
+  transition: background-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== 卡片设计系统 ====================
+ * 全站卡片统一引用以下 token：
+ *  --radius-card-lg  主页面大卡片（首页 / 游戏）
+ *  --radius-card-md  中型面板（提取 / 配色页）
+ *  --radius-card-sm  小卡片（色卡 / 导航 / 结果条目）
+ *  --shadow-card-*   各档位阴影（浅色 / 深色由 data-theme 切换）
+ */
+:root {
+  --radius-card-lg: 30px;
+  --radius-card-md: 25px;
+  --radius-card-sm: 16px;
+
+  --shadow-card-lg:
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    0 4px 14px rgba(0, 0, 0, 0.04),
+    0 12px 32px rgba(0, 0, 0, 0.03);
+  --shadow-card-md:
+    0 1px 2px rgba(0, 0, 0, 0.02),
+    0 3px 8px rgba(0, 0, 0, 0.04);
+  --shadow-card-sm:
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-card-sm-hover:
+    0 3px 10px rgba(0, 0, 0, 0.07),
+    0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='dark'] {
+  --shadow-card-lg:
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    0 4px 14px rgba(0, 0, 0, 0.2),
+    0 12px 32px rgba(0, 0, 0, 0.18);
+  --shadow-card-md:
+    0 1px 2px rgba(0, 0, 0, 0.12),
+    0 3px 8px rgba(0, 0, 0, 0.16);
+  --shadow-card-sm:
+    0 1px 2px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.14);
+  --shadow-card-sm-hover:
+    0 3px 10px rgba(0, 0, 0, 0.22),
+    0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
 body {
   font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC',
     -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: var(--color-bg);
   min-height: 100vh;
-  transition: background-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -42,7 +85,7 @@ body::before {
   opacity: 0.10;
   pointer-events: none;
   transition: background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 0;
+  z-index: -1;
 }
 
 body::after {
@@ -57,5 +100,5 @@ body::after {
   opacity: 0.09;
   pointer-events: none;
   transition: background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 0;
+  z-index: -1;
 }
