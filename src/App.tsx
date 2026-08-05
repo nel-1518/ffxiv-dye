@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ConfigProvider, theme as antTheme } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import { useTheme, ThemeProvider } from './hooks/useTheme'
@@ -66,9 +66,10 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      {/* HashRouter：部署到 GitHub Pages 子路径时可避免刷新/深链 404 */}
+      <HashRouter>
         <AppContent />
-      </BrowserRouter>
+      </HashRouter>
     </ThemeProvider>
   )
 }
