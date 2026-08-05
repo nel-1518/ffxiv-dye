@@ -9,7 +9,13 @@ import { useKeyboardNav } from '../../hooks/useKeyboardNav'
 import { useTouchSwipe } from '../../hooks/useTouchSwipe'
 import LogoBadge from './LogoBadge'
 import ColorStrip from './ColorStrip'
-import { PauseOutlined, CaretRightOutlined } from '@ant-design/icons'
+import {
+  PauseOutlined,
+  CaretRightOutlined,
+  PictureOutlined,
+  BgColorsOutlined,
+  ThunderboltOutlined,
+} from '@ant-design/icons'
 import { useAutoSwitch, getAutoPlayState, saveAutoPlayState } from '../../hooks/useAutoSwitch'
 
 function HomePage() {
@@ -74,13 +80,28 @@ function HomePage() {
 
           <ColorStrip diamonds={currentScheme.diamonds} dyeMap={dyeMap} />
 
-          <button className="nav-btn" onClick={() => navigate('/grab')}>
-            图片颜色提取
-          </button>
+          <nav className="nav-grid">
+            <button className="nav-card" onClick={() => navigate('/grab')}>
+              <span className="nav-card-icon">
+                <PictureOutlined />
+              </span>
+              <span className="nav-card-text">色彩提取</span>
+            </button>
 
-          <button className="nav-btn" onClick={() => navigate('/game')}>
-            小游戏 · 猜染剂
-          </button>
+            <button className="nav-card" onClick={() => navigate('/scheme')}>
+              <span className="nav-card-icon">
+                <BgColorsOutlined />
+              </span>
+              <span className="nav-card-text">配色推荐</span>
+            </button>
+
+            <button className="nav-card" onClick={() => navigate('/game')}>
+              <span className="nav-card-icon">
+                <ThunderboltOutlined />
+              </span>
+              <span className="nav-card-text">小游戏</span>
+            </button>
+          </nav>
         </div>
       </div>
     </>

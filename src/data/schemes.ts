@@ -5,8 +5,8 @@ export const schemes: Scheme[] = [
   {
     id: 'rose-gold',
     name: '玫瑰金',
-    light: { bg: '#F9F8F4', card: '#ffffff', text: '#1E1E1E', ring: '#451511' },
-    dark: { bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#8B3A32' },
+    light: { primary: '#CC6C5E', bg: '#F9F8F4', card: '#ffffff', text: '#1E1E1E', ring: '#451511' },
+    dark: { primary: '#a24730', bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#8B3A32' },
     diamonds: [
       { hex: '#E69F96', name: '玫瑰粉' },
       { hex: '#CC6C5E', name: '珊瑚粉' },
@@ -18,8 +18,8 @@ export const schemes: Scheme[] = [
   {
     id: 'ocean',
     name: '深海秘境',
-    light: { bg: '#e8eef5', card: '#f7f9fc', text: '#181937', ring: '#312D57' },
-    dark: { bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#5B5599' },
+    light: { primary: '#04AFCD', bg: '#e8eef5', card: '#f7f9fc', text: '#181937', ring: '#312D57' },
+    dark: { primary: '#048B9E', bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#5B5599' },
     diamonds: [
       { hex: '#83B0D2', name: '天空蓝' },
       { hex: '#04AFCD', name: '松石蓝' },
@@ -31,8 +31,8 @@ export const schemes: Scheme[] = [
   {
     id: 'forest',
     name: '森林低语',
-    light: { bg: '#eef2e6', card: '#fafcf7', text: '#323621', ring: '#1E2A21' },
-    dark: { bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#4A6B52' },
+    light: { primary: '#9BB363', bg: '#eef2e6', card: '#fafcf7', text: '#323621', ring: '#1E2A21' },
+    dark: { primary: '#7A9449', bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#4A6B52' },
     diamonds: [
       { hex: '#9BB363', name: '苹果绿' },
       { hex: '#BBBB8A', name: '妖精绿' },
@@ -44,8 +44,8 @@ export const schemes: Scheme[] = [
   {
     id: 'purple-haze',
     name: '紫罗兰梦',
-    light: { bg: '#f2edf5', card: '#fdfbfe', text: '#322C3B', ring: '#3B2A3D' },
-    dark: { bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#6A4D6E' },
+    light: { primary: '#877FAE', bg: '#f2edf5', card: '#fdfbfe', text: '#322C3B', ring: '#3B2A3D' },
+    dark: { primary: '#6A5E99', bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#6A4D6E' },
     diamonds: [
       { hex: '#B79EBC', name: '鸢尾紫' },
       { hex: '#877FAE', name: '薰衣草' },
@@ -57,8 +57,8 @@ export const schemes: Scheme[] = [
   {
     id: 'sunset',
     name: '落日余晖',
-    light: { bg: '#faf3e8', card: '#fffdf9', text: '#2B2923', ring: '#451511' },
-    dark: { bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#8B3A32' },
+    light: { primary: '#C57424', bg: '#faf3e8', card: '#fffdf9', text: '#2B2923', ring: '#451511' },
+    dark: { primary: '#A05E1A', bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#8B3A32' },
     diamonds: [
       { hex: '#B75C2D', name: '日落橙' },
       { hex: '#C57424', name: '南瓜橙' },
@@ -70,8 +70,8 @@ export const schemes: Scheme[] = [
   {
     id: 'graphite',
     name: '石墨雅致',
-    light: { bg: '#E4DFD0', card: '#fcfbf8', text: '#1E1E1E', ring: '#1E1E1E' },
-    dark: { bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#808080' },
+    light: { primary: '#656565', bg: '#E4DFD0', card: '#fcfbf8', text: '#1E1E1E', ring: '#1E1E1E' },
+    dark: { primary: '#898784', bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#808080' },
     diamonds: [
       { hex: '#656565', name: '石板灰' },
       { hex: '#898784', name: '古菩灰' },
@@ -83,8 +83,8 @@ export const schemes: Scheme[] = [
   {
     id: 'cherry-blossom',
     name: '樱吹雪',
-    light: { bg: '#fff5f8', card: '#fffbfc', text: '#321919', ring: '#5B1729' },
-    dark: { bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#9E2D4D' },
+    light: { primary: '#F5379B', bg: '#fff5f8', card: '#fffbfc', text: '#321919', ring: '#5B1729' },
+    dark: { primary: '#C42D7D', bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#9E2D4D' },
     diamonds: [
       { hex: '#FECEF5', name: '莲花粉' },
       { hex: '#F5379B', name: '樱桃粉' },
@@ -96,8 +96,8 @@ export const schemes: Scheme[] = [
   {
     id: 'vintage',
     name: '复古胶片',
-    light: { bg: '#f5efe4', card: '#fdfaf5', text: '#30211B', ring: '#3D290D' },
-    dark: { bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#7A5520' },
+    light: { primary: '#B77D36', bg: '#f5efe4', card: '#fdfaf5', text: '#30211B', ring: '#3D290D' },
+    dark: { primary: '#8C6029', bg: '#1a1a1a', card: '#2a2a2a', text: '#f2d3b6', ring: '#7A5520' },
     diamonds: [
       { hex: '#B9A489', name: '哥布林' },
       { hex: '#A2875C', name: '山羊棕' },

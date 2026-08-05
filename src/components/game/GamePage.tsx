@@ -193,7 +193,7 @@ function GamePage() {
             </button>
           )}
           <div className={start ? "game-section-hidden" : "game-section"}>
-            <h1 className="game-title">染剂整理</h1>
+            <h1 className="game-title">猜染剂</h1>
             <h4 className="game-subtitle">
               某日，你打开陆行鸟鞍囊
               <br />

@@ -8,7 +8,7 @@ const STORAGE_KEY = 'ffxiv-dye-scheme'
 /**
  * 从 localStorage 读取上次保存的方案索引，若无则随机
  */
-function getSavedIndex(length: number): number {
+export function getSavedIndex(length: number): number {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved !== null) {
@@ -28,6 +28,7 @@ function applySchemeToDOM(scheme: Scheme, resolved: ResolvedTheme) {
   const colors = resolved === 'dark' ? scheme.dark : scheme.light
   const style = document.documentElement.style
 
+  style.setProperty('--color-primary', colors.primary)
   style.setProperty('--color-bg', colors.bg)
   style.setProperty('--color-card', colors.card)
   style.setProperty('--color-text', colors.text)
@@ -40,6 +41,9 @@ function applySchemeToDOM(scheme: Scheme, resolved: ResolvedTheme) {
 
   // 深色模式用 screen，浅色用 multiply
   style.setProperty('--blend-mode', resolved === 'dark' ? 'screen' : 'multiply')
+
+  // 通知外部 scheme 已变更
+  window.dispatchEvent(new CustomEvent('ffxiv-scheme-change'))
 }
 
 export function useScheme(schemes: Scheme[], resolvedTheme: ResolvedTheme) {

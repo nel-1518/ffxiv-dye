@@ -1,4 +1,5 @@
 export interface SchemeColors {
+  primary: string
   bg: string
   card: string
   text: string

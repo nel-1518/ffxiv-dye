@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预设颜色搭配算法演示</title>
+    <!-- 引入 Chroma.js 用于专业的色彩计算 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-sub: #7f8c8d;
+            --primary: #3498db;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-sub);
+            margin-bottom: 30px;
+        }
+
+        /* 控制面板 */
+        .controls {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        select, button {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* 预设颜色池 */
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+        }
+
+        .color-pool {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 8px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .color-swatch {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .color-swatch.selected {
+            border: 3px solid #2c3e50;
+            transform: scale(1.15);
+            z-index: 20;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .color-swatch.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .color-swatch.active {
+            border: 4px solid #ffd700;
+            transform: scale(1.25);
+            z-index: 30;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .color-swatch.active::after {
+            content: '★';
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            font-size: 14px;
+            color: #ffd700;
+            text-shadow: 0 0 4px rgba(0,0,0,0.5);
+        }
+
+        /* 结果展示区 */
+        .result-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .result-area {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .palette-card, .preview-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .palette-display {
+            display: flex;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .palette-color {
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .contrast-info {
+            font-size: 13px;
+            color: var(--text-sub);
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .contrast-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+
+        .pass { background: #27ae60; }
+        .fail { background: #e74c3c; }
+
+        /* UI 预览 */
+        .ui-preview {
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.5s ease;
+        }
+
+        .ui-preview h3 {
+            margin-top: 0;
+        }
+
+        .ui-preview .btn-preview {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+        
+        .ui-preview .btn-preview:hover {
+            opacity: 0.8;
+        }
+
+        .ui-preview .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎨 预设颜色搭配算法演示</h1>
+    <p class="subtitle">从 109 个 FFXIV 染色剂颜色中，利用色彩几何与感知算法，自动挑选最和谐的颜色组合</p>
+
+    <!-- 控制面板 -->
+    <div class="controls">
+        <label>搭配模式：</label>
+        <select id="modeSelect">
+            <option value="smart">智能和谐 (综合色相与明度)</option>
+            <option value="complementary">互补色 (180°)</option>
+            <option value="analogous">类似色 (±30°)</option>
+            <option value="triadic">三角色 (120°)</option>
+        </select>
+        <label>挑选数量：</label>
+        <select id="countSelect">
+            <option value="3">3 种颜色</option>
+            <option value="4" selected>4 种颜色</option>
+            <option value="5">5 种颜色</option>
+        </select>
+        <button id="generateBtn">✨ 生成搭配</button>
+    </div>
+
+    <!-- 预设颜色池 -->
+    <h3 class="section-title">预设颜色池 (FFXIV 染色剂 · 共 109 色)</h3>
+    <div class="color-pool" id="colorPool"></div>
+
+    <!-- 结果展示 -->
+    <div class="result-area">
+        <div class="palette-card">
+            <h3 class="section-title">挑选结果</h3>
+            <div class="palette-display" id="paletteDisplay"></div>
+            <div class="contrast-info" id="contrastInfo">
+                点击“生成搭配”查看结果与对比度分析...
+            </div>
+        </div>
+        <div class="preview-card">
+            <h3 class="section-title">UI 场景预览</h3>
+            <div class="ui-preview" id="uiPreview">
+                <h3>数据看板标题</h3>
+                <p>这是一段正文内容，用于测试背景色与文本颜色的对比度是否满足 WCAG 无障碍阅读标准。</p>
+                <div style="margin-top: 15px;">
+                    <span class="tag">标签 A</span>
+                    <span class="tag">标签 B</span>
+                    <span class="tag">标签 C</span>
+                </div>
+                <a href="#" class="btn-preview">主要操作按钮</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. 预设颜色池 (来自 FFXIV 染色剂数据)
+    const PRESET_COLORS = [
+        '#E4DFD0', '#ACA8A2', '#898784', '#656565', '#484742', '#2B2923',
+        '#E69F96', '#836969', '#5B1729', '#781A1A', '#622207', '#451511',
+        '#CC6C5E', '#913B27', '#E4AA8A', '#E40011', '#F5379B', '#DE0B16', '#ED118E',
+        '#B75C2D', '#7D3906', '#6A4B37', '#6E3D24', '#4F2D1F', '#30211B',
+        '#C99156', '#996E3F', '#7B5C2D', '#A2875C', '#C57424', '#8E581B', '#644216', '#3D290D',
+        '#B9A489', '#92816C', '#615245', '#3F3329', '#F45011',
+        '#EBD3A0', '#B7A370', '#DBB457', '#FAC62B', '#E49E34', '#BC8804', '#F2D770', '#A58430', '#403311',
+        '#FEF864', '#FBF1B4', '#DFEA08',
+        '#585230', '#BBBB8A', '#ABB054', '#707326', '#8B9C63', '#4B5232', '#323621',
+        '#9BB363', '#658241', '#284B2C', '#406339', '#5F7558', '#3B4D3C', '#1E2A21',
+        '#96BDB9', '#437272', '#1F4646', '#B5F710',
+        '#B2C4CE', '#83B0D2', '#6481A0', '#3B6886', '#1C3D54',
+        '#8E9BAC', '#4F5766', '#2F3851', '#1A1F27',
+        '#5B7FC0', '#2F5889', '#234172', '#112944', '#273067', '#181937',
+        '#373747', '#312D57', '#000EA2', '#04AFCD', '#3A4C90',
+        '#877FAE', '#514560', '#322C3B', '#B79EBC', '#3B2A3D',
+        '#FECEF5', '#DC9BCA', '#79526C', '#66304E', '#62508F',
+        '#F9F8F4', '#1E1E1E',
+        '#FDC8C6', '#321919', '#28211C',
+        '#BACFAA', '#152C2C',
+        '#96A4D9', '#121F2D',
+        '#BBB5DA', '#232026'
+    ];
+
+    // 2. 状态：用户当前选中的基准色 (null 表示无选中，随机挑选)
+    let activeBaseColor = null;
+
+    // 3. 初始化 UI
+    const poolEl = document.getElementById('colorPool');
+    PRESET_COLORS.forEach((color, index) => {
+        const swatch = document.createElement('div');
+        swatch.className = 'color-swatch';
+        swatch.style.backgroundColor = color;
+        swatch.title = color;
+        swatch.dataset.index = index;
+        // 点击色块：选中为基准色
+        swatch.addEventListener('click', () => {
+            // 清除之前的 active
+            document.querySelectorAll('.color-swatch.active').forEach(el => el.classList.remove('active'));
+            swatch.classList.add('active');
+            activeBaseColor = color;
+        });
+        poolEl.appendChild(swatch);
+    });
+
+    // 5. 核心算法：计算两个色相的差值 (考虑环形结构)
+    function getHueDiff(h1, h2) {
+        let diff = Math.abs(h1 - h2);
+        return Math.min(diff, 360 - diff);
+    }
+
+    // 6. 核心算法：从预设池中挑选颜色 (baseColorHex 可选，不传则随机)
+    function selectColors(mode, count, baseColorHex) {
+        // 未指定基准色时随机选择一个
+        if (!baseColorHex) {
+            baseColorHex = PRESET_COLORS[Math.floor(Math.random() * PRESET_COLORS.length)];
+        }
+        const baseChroma = chroma(baseColorHex);
+        const baseHue = baseChroma.hsl()[0] || 0;
+        const baseLum = baseChroma.luminance();
+
+        // 定义目标色相 (根据模式)，并加入随机抖动让每次结果不同
+        function jitteredHue(h, range) {
+            const offset = (Math.random() - 0.5) * range; // 正负 range/2 之间
+            return (h + offset + 360) % 360;
+        }
+
+        let targetHues = [baseHue];
+        if (mode === 'complementary') {
+            targetHues.push((baseHue + 180 + (Math.random() - 0.5) * 30) % 360); // ±15°
+        } else if (mode === 'analogous') {
+            targetHues.push((baseHue + 30 + (Math.random() - 0.5) * 20) % 360);  // ±10°
+            targetHues.push((baseHue - 30 + (Math.random() - 0.5) * 20 + 360) % 360);
+        } else if (mode === 'triadic') {
+            targetHues.push((baseHue + 120 + (Math.random() - 0.5) * 24) % 360); // ±12°
+            targetHues.push((baseHue + 240 + (Math.random() - 0.5) * 24) % 360);
+        } else if (mode === 'smart') {
+            targetHues.push((baseHue + 150 + Math.random() * 60) % 360); // 原本已有随机
+            targetHues.push((baseHue + 30 + (Math.random() - 0.5) * 20) % 360);
+        }
+
+        let selected = [baseColorHex];
+        let usedIndices = [PRESET_COLORS.indexOf(baseColorHex)];
+
+        // 为每个目标色相挑选颜色 — 改用加权随机，避免每次都是同一个"最佳"
+        for (let i = 1; i < count; i++) {
+            let targetHue = targetHues[i % targetHues.length];
+
+            // 收集所有候选及得分
+            let candidates = [];
+
+            PRESET_COLORS.forEach((color, index) => {
+                if (usedIndices.includes(index)) return;
+
+                const c = chroma(color);
+                const h = c.hsl()[0] || 0;
+                const l = c.luminance();
+
+                const hueDiff = getHueDiff(h, targetHue);
+                let hueScore = Math.max(0, 100 - hueDiff);
+
+                let lumScore = 0;
+                if (mode === 'smart') {
+                    lumScore = Math.abs(l - baseLum) * 50;
+                }
+
+                // 加入随机扰动因子 (±15%)，同一次生成内每次也不同
+                const randomFactor = 1 + (Math.random() - 0.5) * 0.3;
+                const score = (hueScore + lumScore) * randomFactor;
+
+                candidates.push({ color, index, score });
+            });
+
+            // 按分数从高到低排序
+            candidates.sort((a, b) => b.score - a.score);
+
+            // 从前 N 名中按权重随机选取 (top 5 或 total 的 30%，取较大值)
+            const poolSize = Math.max(5, Math.ceil(candidates.length * 0.3));
+            const pool = candidates.slice(0, poolSize);
+
+            // 加权概率：得分越高概率越大
+            const totalScore = pool.reduce((s, c) => s + c.score, 0);
+            let rand = Math.random() * totalScore;
+            let chosen = pool[0];
+            for (const p of pool) {
+                rand -= p.score;
+                if (rand <= 0) { chosen = p; break; }
+            }
+
+            if (chosen) {
+                selected.push(chosen.color);
+                usedIndices.push(chosen.index);
+            }
+        }
+
+        // 按明度排序，让调色板看起来更有层次 (从亮到暗或从暗到亮)
+        selected.sort((a, b) => chroma(b).luminance() - chroma(a).luminance());
+        
+        return selected;
+    }
+
+    // 5. 更新 UI 展示
+    function updateUI(selectedColors) {
+        // 清除之前的选中状态
+        document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('selected'));
+
+        // 高亮预设池中的选中颜色
+        selectedColors.forEach(color => {
+            const index = PRESET_COLORS.indexOf(color);
+            if (index !== -1) {
+                document.querySelector(`.color-swatch[data-index="${index}"]`).classList.add('selected');
+            }
+        });
+
+        // 渲染调色板
+        const paletteDisplay = document.getElementById('paletteDisplay');
+        paletteDisplay.innerHTML = '';
+        selectedColors.forEach(color => {
+            const div = document.createElement('div');
+            div.className = 'palette-color';
+            div.style.backgroundColor = color;
+            div.textContent = color.toUpperCase();
+            // 如果颜色太浅，字变黑
+            if (chroma(color).luminance() > 0.4) {
+                div.style.color = '#333';
+                div.style.textShadow = 'none';
+            }
+            paletteDisplay.appendChild(div);
+        });
+
+        // 计算对比度并更新信息
+        const bg = selectedColors[0]; // 最亮的作为背景
+        const text = selectedColors[selectedColors.length - 1]; // 最暗的作为文本
+        const contrastRatio = chroma.contrast(bg, text).toFixed(2);
+        
+        const contrastInfo = document.getElementById('contrastInfo');
+        let passLevel = 'fail';
+        let passText = '不通过 (AA)';
+        if (contrastRatio >= 7) { passLevel = 'pass'; passText = '完美通过 (AAA)'; }
+        else if (contrastRatio >= 4.5) { passLevel = 'pass'; passText = '通过 (AA)'; }
+
+        contrastInfo.innerHTML = `
+            <strong>无障碍对比度检测：</strong><br>
+            背景: <span style="color:${bg};font-weight:bold;">${bg}</span> 
+            文本: <span style="color:${text};font-weight:bold;">${text}</span><br>
+            对比度: <strong>${contrastRatio}:1</strong> 
+            <span class="contrast-badge ${passLevel}">${passText}</span>
+        `;
+
+        // 渲染 UI 预览
+        const uiPreview = document.getElementById('uiPreview');
+        const primary = selectedColors[2] || selectedColors[1]; // 中间色作为主色
+        const secondary = selectedColors[1] || selectedColors[0]; 
+        
+        uiPreview.style.backgroundColor = bg;
+        uiPreview.style.color = text;
+        
+        // 按钮样式
+        const btn = uiPreview.querySelector('.btn-preview');
+        btn.style.backgroundColor = primary;
+        btn.style.color = chroma(primary).luminance() > 0.4 ? '#333' : '#fff';
+
+        // 标签样式
+        const tags = uiPreview.querySelectorAll('.tag');
+        tags.forEach((tag, i) => {
+            const tagColor = selectedColors[(i + 1) % selectedColors.length];
+            tag.style.backgroundColor = chroma(tagColor).alpha(0.2).css();
+            tag.style.color = chroma(tagColor).darken(1).css();
+        });
+    }
+
+    // 6. 绑定事件
+    document.getElementById('generateBtn').addEventListener('click', () => {
+        const mode = document.getElementById('modeSelect').value;
+        const count = parseInt(document.getElementById('countSelect').value);
+        const selected = selectColors(mode, count, activeBaseColor);
+        updateUI(selected);
+    });
+
+    // 初始生成一次 (未选中基准色时随机)
+    const initialSelected = selectColors('smart', 4, null);
+    updateUI(initialSelected);
+
+</script>
+
+</body>
+</html>

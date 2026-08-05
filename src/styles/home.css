@@ -493,30 +493,80 @@
   opacity: 0.5;
 }
 
-/* ========== 导航入口按钮（返回首页/去游戏） ========== */
-.nav-btn {
-  margin-top: 24px;
-  padding: 12px 32px;
-  border-radius: 26px;
-  border: 1.5px solid var(--color-ring);
-  background: color-mix(in srgb, var(--color-ring) 10%, var(--color-card));
+/* ========== 导航入口（纯文字+小图标） ========== */
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 20px;
+  width: min(100%, 250px);
+}
+
+.nav-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 4px 10px;
+  border-radius: 16px;
+  border: none;
+  background: transparent;
   color: var(--color-text);
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   -webkit-tap-highlight-color: transparent;
   outline: none;
-  opacity: 0.75;
+  transition:
+    transform 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.32s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nav-btn:hover {
+.nav-card:hover {
+  background: color-mix(in srgb, var(--color-ring) 6%, transparent);
+  transform: translateY(-2px);
+}
+
+.nav-card:active {
+  transform: scale(0.96);
+}
+
+.nav-card:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ring) 25%, transparent);
+}
+
+.nav-card-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: var(--color-text);
+  opacity: 0.75;
+  transition:
+    opacity 0.3s ease,
+    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-card:hover .nav-card-icon {
   opacity: 1;
-  background: var(--color-ring);
-  color: white;
-  border-color: var(--color-ring);
+  transform: scale(1.12);
+}
+
+.nav-card-text {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  text-align: center;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.nav-card:hover .nav-card-text {
+  opacity: 1;
 }
 
 /* ========== 响应式 ========== */
@@ -560,6 +610,24 @@
   .hint-text {
     bottom: -19px;
     font-size: 10px;
+  }
+  .nav-grid {
+    gap: 6px;
+    margin-top: 16px;
+    width: min(100%, 200px);
+  }
+  .nav-card {
+    gap: 5px;
+    padding: 10px 2px 8px;
+    border-radius: 14px;
+  }
+  .nav-card-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  .nav-card-text {
+    font-size: 11.5px;
   }
 }
 
@@ -605,9 +673,16 @@
     font-size: 9px;
     letter-spacing: 0.10em;
   }
-  .nav-btn {
-    padding: 10px 20px;
+  .nav-grid {
+    gap: 4px;
+  }
+  .nav-card-icon {
+    width: 28px;
+    height: 28px;
     font-size: 13px;
+  }
+  .nav-card-text {
+    font-size: 11px;
   }
 }
 

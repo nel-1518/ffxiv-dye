@@ -1,0 +1,523 @@
+/* ==================== 配色推荐页面样式 ====================
+ * 参照首页/游戏/提取页的设计语言：多层阴影、大圆角、主题过渡
+ */
+
+.scheme-page {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  animation: scheme-fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes scheme-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 容器 ---------- */
+
+.scheme-container {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ---------- 分区标题 ---------- */
+
+.scheme-section-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 16px;
+  padding-left: 12px;
+  border-left: 4px solid var(--color-ring, #CC6C5E);
+  color: var(--color-text);
+  text-align: left;
+  transition: border-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==============================
+   颜色池
+   ============================== */
+
+.scheme-pool-section {
+  background: var(--color-card);
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.03),
+    0 8px 24px rgba(0, 0, 0, 0.05);
+  transition:
+    background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 颜色池内 Tabs 标签左对齐 */
+.scheme-pool-section .ant-tabs-nav {
+  margin-bottom: 14px;
+}
+
+.scheme-pool-section .ant-tabs-nav-list {
+  justify-content: flex-start;
+}
+
+[data-theme='dark'] .scheme-pool-section {
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.scheme-pool {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 8px;
+}
+
+/* ---------- 色块 ---------- */
+
+.scheme-swatch {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+              border-color 0.2s ease;
+  position: relative;
+  padding: 0;
+  outline: none;
+}
+
+.scheme-swatch:hover {
+  transform: scale(1.18);
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* 已选中色块：白色边框高亮 */
+.scheme-swatch:has(.scheme-swatch__check) {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+[data-theme='dark'] .scheme-swatch:has(.scheme-swatch__check) {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.scheme-swatch__check {
+  position: absolute;
+  font-size: 16px;
+  color: white;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1;
+}
+
+/* ==============================
+   底部：已选基准色 + 生成按钮（颜色池卡片内）
+   ============================== */
+
+.scheme-pool-footer {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-ring);
+  border-top-color: color-mix(in srgb, var(--color-ring) 14%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+}
+
+.scheme-pool-hint {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  opacity: 0.4;
+}
+
+/* 第一行：色块圆点 */
+.scheme-pool-footer__chips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.scheme-pool-chip {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.scheme-pool-chip:hover {
+  transform: scale(1.2);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* 第二行：颜色名称 */
+.scheme-pool-footer__names {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.scheme-pool-name {
+  font-size: 0.85rem;
+  color: var(--color-text);
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+/* 第三行：生成按钮（参考主页 nav-btn） */
+.scheme-nav-btn {
+  margin-top: 4px;
+  padding: 11px 36px;
+  border-radius: 26px;
+  border: 1.5px solid var(--color-ring);
+  background: color-mix(in srgb, var(--color-ring) 10%, var(--color-card));
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-family: inherit;
+  transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  opacity: 0.8;
+}
+
+.scheme-nav-btn:hover:not(:disabled) {
+  opacity: 1;
+  background: var(--color-ring);
+  color: white;
+  border-color: var(--color-ring);
+}
+
+.scheme-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ---------- 结果卡片头（标题 + 视图切换） ---------- */
+
+.scheme-results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* ---------- 视图切换 ---------- */
+
+.scheme-view-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+/* ==============================
+   结果展示区域
+   ============================== */
+
+.scheme-results-section {
+  background: var(--color-card);
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.03),
+    0 8px 24px rgba(0, 0, 0, 0.05);
+  animation: scheme-result-in 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='dark'] .scheme-results-section {
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes scheme-result-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 4 个结果卡片纵向排列 ---------- */
+
+.scheme-results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- 配色卡片 ---------- */
+
+.scheme-card {
+  background: var(--color-bg, #f4f7f6);
+  border-radius: 14px;
+  padding: 16px 18px;
+  transition:
+    background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scheme-card:hover {
+  /* 无浮动/阴影效果 */
+}
+
+[data-theme='dark'] .scheme-card {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme='dark'] .scheme-card:hover {
+  /* 无浮动/阴影效果 */
+}
+
+.scheme-card__title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--color-text);
+  opacity: 0.75;
+}
+
+/* ---------- 色条 ---------- */
+
+.scheme-strip {
+  display: flex;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.scheme-strip__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 8px;
+  gap: 2px;
+  transition: flex 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  min-width: 0;
+}
+
+.scheme-strip__item:hover {
+  flex: 1.6;
+}
+
+.scheme-strip__hex {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.scheme-strip__name {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 95%;
+}
+
+/* ---------- 圆形色块展示（高度与条状同步） ---------- */
+
+.scheme-circle-row {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  padding: 0;
+}
+
+.scheme-circle-swatch {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: default;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.scheme-circle-swatch:hover {
+  transform: scale(1.12);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.18),
+    0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.scheme-circle-swatch__hex {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- 免责声明 ---------- */
+
+.scheme-disclaimer {
+  font-size: 0.78rem;
+  color: var(--color-text);
+  opacity: 0.4;
+  text-align: center;
+  margin: 16px 0 0;
+}
+
+/* ==============================
+   响应式 — 平板/手机 ≤700px
+   ============================== */
+
+@media (max-width: 700px) {
+  .scheme-container {
+    max-width: 100%;
+    gap: 16px;
+  }
+
+  .scheme-pool-section {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .scheme-pool {
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+    gap: 8px;
+  }
+
+  .scheme-swatch {
+    border-radius: 12px;
+  }
+
+  .scheme-pool-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    gap: 8px;
+    min-height: 44px;
+  }
+
+  .scheme-pool-chip {
+    width: 26px;
+    height: 26px;
+  }
+
+  .scheme-pool-name {
+    font-size: 0.82rem;
+  }
+
+  .scheme-nav-btn {
+    width: 100%;
+    padding: 13px 0;
+    font-size: 1.05rem;
+    text-align: center;
+  }
+
+  .scheme-results-section {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .scheme-card {
+    padding: 14px 16px;
+    border-radius: 12px;
+  }
+
+  .scheme-strip {
+    height: 52px;
+  }
+
+  .scheme-circle-row {
+    height: 52px;
+  }
+
+  .scheme-circle-swatch {
+    width: 46px;
+    height: 46px;
+  }
+
+  .scheme-circle-row {
+    gap: 10px;
+  }
+}
+
+/* ==============================
+   响应式 — 小手机 ≤400px
+   ============================== */
+
+@media (max-width: 400px) {
+  .scheme-container {
+    gap: 12px;
+  }
+
+  .scheme-pool-section {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .scheme-pool {
+    grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+    gap: 6px;
+  }
+
+  .scheme-section-title {
+    margin-bottom: 12px;
+  }
+
+  .scheme-pool-footer {
+    margin-top: 14px;
+    padding-top: 14px;
+    gap: 6px;
+  }
+
+  .scheme-results-section {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .scheme-card {
+    padding: 12px 14px;
+  }
+
+  .scheme-strip {
+    height: 46px;
+  }
+
+  .scheme-circle-row {
+    height: 46px;
+  }
+
+  .scheme-circle-swatch {
+    width: 40px;
+    height: 40px;
+  }
+
+  .scheme-circle-row {
+    gap: 8px;
+  }
+}

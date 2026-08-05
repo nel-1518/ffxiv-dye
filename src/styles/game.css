@@ -283,10 +283,6 @@
   }
 }
 
-.game-play-btn:active {
-  transform: scale(0.96);
-}
-
 /* ========== 超越之力 Checkbox ========== */
 .game-echo {
   margin-top: 14px;
