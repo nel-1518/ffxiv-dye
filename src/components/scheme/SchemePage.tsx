@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import { Button, Tooltip, Tabs } from 'antd'
-import { CheckOutlined, ColumnWidthOutlined, ExperimentOutlined } from '@ant-design/icons'
+import { CheckOutlined, ColumnWidthOutlined, ExperimentOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
 import colorData from '../../data/colors.json'
 import type { Color } from '../../types/color'
 import { selectSchemeColors, type SchemeMode } from '../../utils/schemeAlgorithm'
@@ -82,7 +82,7 @@ function ColorSwatch({
 
 /* ---------- 配色结果卡片子组件 ---------- */
 
-function SchemeCard({ item, viewMode }: { item: SchemeResultItem; viewMode: 'strip' | 'circle' }) {
+function SchemeCard({ item, viewMode, showLabels }: { item: SchemeResultItem; viewMode: 'strip' | 'circle'; showLabels: boolean }) {
   return (
     <div className="scheme-card">
       <h4 className="scheme-card__title">{item.modeLabel}</h4>
@@ -97,10 +97,14 @@ function SchemeCard({ item, viewMode }: { item: SchemeResultItem; viewMode: 'str
                 color: isLight(hex) ? '#333' : '#fff',
               }}
             >
-              <span className="scheme-strip__hex">{hex.toUpperCase()}</span>
-              <span className="scheme-strip__name">
-                {COLORS.find((c) => c.color === hex)?.name ?? ''}
-              </span>
+              {showLabels && (
+                <>
+                  <span className="scheme-strip__hex">{hex.toUpperCase()}</span>
+                  <span className="scheme-strip__name">
+                    {COLORS.find((c) => c.color === hex)?.name ?? ''}
+                  </span>
+                </>
+              )}
             </div>
           ))}
         </div>
@@ -112,7 +116,9 @@ function SchemeCard({ item, viewMode }: { item: SchemeResultItem; viewMode: 'str
                 className="scheme-circle-swatch"
                 style={{ backgroundColor: hex }}
               >
-                <span className="scheme-circle-swatch__hex">{hex.toUpperCase()}</span>
+                {showLabels && (
+                  <span className="scheme-circle-swatch__hex">{hex.toUpperCase()}</span>
+                )}
               </div>
             </Tooltip>
           ))}
@@ -128,6 +134,7 @@ function SchemePage() {
   const [selectedColors, setSelectedColors] = useState<string[]>([])
   const [results, setResults] = useState<SchemeResultItem[] | null>(null)
   const [viewMode, setViewMode] = useState<'strip' | 'circle'>('strip')
+  const [showLabels, setShowLabels] = useState(false)
 
   // 颜色池
   const pool = useMemo(() => COLORS.map((c) => c.color), [])
@@ -236,24 +243,34 @@ function SchemePage() {
           <section className="scheme-results-section">
             <div className="scheme-results-header">
               <h3 className="scheme-section-title" style={{ margin: 0 }}>配色结果</h3>
-              <div className="scheme-view-toggle">
-                <Button
-                  size="small"
-                  type={viewMode === 'strip' ? 'primary' : 'default'}
-                  icon={<ColumnWidthOutlined />}
-                  onClick={() => setViewMode('strip')}
-                />
-                <Button
-                  size="small"
-                  type={viewMode === 'circle' ? 'primary' : 'default'}
-                  icon={<ExperimentOutlined />}
-                  onClick={() => setViewMode('circle')}
-                />
+              <div className="scheme-results-actions">
+                <Tooltip title={showLabels ? '隐藏色块内文字' : '显示色块内文字'}>
+                  <Button
+                    size="small"
+                    className="scheme-label-toggle"
+                    icon={showLabels ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                    onClick={() => setShowLabels((v) => !v)}
+                  />
+                </Tooltip>
+                <div className="scheme-view-toggle">
+                  <Button
+                    size="small"
+                    type={viewMode === 'strip' ? 'primary' : 'default'}
+                    icon={<ColumnWidthOutlined />}
+                    onClick={() => setViewMode('strip')}
+                  />
+                  <Button
+                    size="small"
+                    type={viewMode === 'circle' ? 'primary' : 'default'}
+                    icon={<ExperimentOutlined />}
+                    onClick={() => setViewMode('circle')}
+                  />
+                </div>
               </div>
             </div>
             <div className="scheme-results-grid">
               {results.map((item) => (
-                <SchemeCard key={item.mode} item={item} viewMode={viewMode} />
+                <SchemeCard key={item.mode} item={item} viewMode={viewMode} showLabels={showLabels} />
               ))}
             </div>
             <p className="scheme-disclaimer">
