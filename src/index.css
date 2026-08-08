@@ -10,10 +10,33 @@
   box-sizing: border-box;
 }
 
+/* 注册主题色变量为 <color> 类型，使引用它们的 background 渐变可平滑插值过渡 */
+@property --color-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f9f8f4;
+}
+
+@property --color-d1 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #e69f96;
+}
+
+@property --color-d3 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f2d770;
+}
+
 html {
   -webkit-tap-highlight-color: transparent;
   background-color: var(--color-bg);
-  transition: background-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    --color-bg var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    --color-d1 var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1),
+    --color-d3 var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==================== 卡片设计系统 ====================
@@ -70,35 +93,15 @@ body {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-user-select: none;
-}
-
-/* 背景光晕 */
-body::before {
-  content: '';
-  position: fixed;
-  top: -200px;
-  right: -200px;
-  width: 550px;
-  height: 550px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--color-d1) 0%, transparent 68%);
-  opacity: 0.10;
-  pointer-events: none;
-  transition: background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: -1;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  bottom: -180px;
-  left: -180px;
-  width: 480px;
-  height: 480px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--color-d3) 0%, transparent 68%);
-  opacity: 0.09;
-  pointer-events: none;
-  transition: background var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: -1;
+  /* 兜底纯色背景 */
+  background-color: var(--color-bg);
+  /* 当前主题的柔和渐变背景：对角三段式，两端带主题色、中间保持背景色 */
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-bg) 80%, var(--color-d1) 10%) 0%,
+    var(--color-bg) 38%,
+    var(--color-bg) 66%,
+    color-mix(in srgb, var(--color-bg) 84%, var(--color-d3) 10%) 100%
+  );
+  background-attachment: fixed;
 }
