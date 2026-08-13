@@ -337,6 +337,29 @@
   opacity: 0.5;
 }
 
+/* ========== 连击显示 ========== */
+.game-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #c9822b;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+[data-theme="dark"] .game-streak {
+  color: #e09a4a;
+}
+
+.game-streak .game-play-info-value {
+  color: #c9822b;
+  opacity: 1;
+}
+
+[data-theme="dark"] .game-streak .game-play-info-value {
+  color: #e09a4a;
+}
+
 /* ========== 颜色展示区 ========== */
 .game-color-area {
   display: flex;
@@ -455,12 +478,9 @@
   }
 }
 
-/* ========== 超越之力按钮 ========== */
+/* ========== 超越之力按钮（位于能力栏内） ========== */
 .game-echo-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  padding: 5px 14px;
+  padding: 6px 14px;
   border-radius: 16px;
   border: 1.5px solid color-mix(in srgb, var(--color-ring) 18%, transparent);
   background: color-mix(in srgb, var(--color-ring) 3%, var(--color-card));
@@ -472,8 +492,8 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
   -webkit-tap-highlight-color: transparent;
-  z-index: 1;
   letter-spacing: 0.06em;
+  user-select: none;
 }
 
 .game-echo-btn:hover {
@@ -492,6 +512,145 @@
   opacity: 1;
   border-color: #8fc98f;
   color: #8fc98f;
+}
+
+/* ========== 能力栏 ========== */
+.game-ability-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.game-ability-btn {
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 1.5px solid color-mix(in srgb, var(--color-ring) 12%, transparent);
+  background: color-mix(in srgb, var(--color-ring) 2%, var(--color-card));
+  color: var(--color-text);
+  opacity: 0.35;
+  cursor: not-allowed;
+  font-size: 13px;
+  font-family: inherit;
+  letter-spacing: 0.06em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.game-ability-available {
+  opacity: 1;
+  cursor: pointer;
+  border-color: color-mix(in srgb, var(--color-ring) 35%, transparent);
+  background: color-mix(in srgb, var(--color-ring) 6%, var(--color-card));
+}
+
+@media (hover: hover) {
+  .game-ability-available:hover {
+    background: var(--color-ring);
+    color: white;
+    border-color: var(--color-ring);
+  }
+}
+
+.game-ability-used {
+  opacity: 0.35;
+  text-decoration: line-through;
+}
+
+/* ========== 遗忘徽标 ========== */
+.game-forget-badge {
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 1.5px solid #c9a14f;
+  color: #c9a14f;
+  background: color-mix(in srgb, #c9a14f 8%, var(--color-card));
+  font-size: 13px;
+  font-family: inherit;
+  letter-spacing: 0.06em;
+  user-select: none;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: game-forget-pulse 0.9s ease-in-out infinite;
+}
+
+@media (hover: hover) {
+  .game-forget-badge:hover {
+    background: color-mix(in srgb, #c9a14f 16%, var(--color-card));
+  }
+}
+
+.game-forget-badge:active {
+  transform: scale(0.95);
+}
+
+@keyframes game-forget-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ========== 宿命提示字 ========== */
+.game-fate-hint {
+  margin: 0;
+  padding: 4px 16px;
+  border-radius: 12px;
+  border: 1.5px solid color-mix(in srgb, var(--color-ring) 20%, transparent);
+  background: color-mix(in srgb, var(--color-ring) 8%, var(--color-card));
+  color: var(--color-text);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  animation: game-fate-in 0.3s ease;
+}
+
+@keyframes game-fate-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== 排除选项 ========== */
+.game-option-btn:disabled {
+  cursor: not-allowed;
+}
+
+.game-option-excluded {
+  opacity: 0.25;
+  filter: grayscale(1);
+  border-style: dashed;
+  text-decoration: line-through;
+  pointer-events: none;
+}
+
+/* ========== 能力确认弹窗 ========== */
+.game-confirm-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--color-text);
+}
+
+.game-confirm-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text);
+  opacity: 0.75;
 }
 
 /* ========== 响应式 ========== */
@@ -575,9 +734,13 @@
   }
 
   .game-echo-btn {
-    top: 12px;
-    right: 12px;
-    font-size: 10px;
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .game-ability-btn,
+  .game-forget-badge {
+    font-size: 11px;
     padding: 5px 10px;
   }
 }
