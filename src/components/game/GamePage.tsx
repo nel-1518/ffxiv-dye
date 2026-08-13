@@ -14,10 +14,12 @@ const TURN = 20;
 type AbilityId = "敏慧" | "安宁" | "宿命";
 const ABILITIES: AbilityId[] = ["敏慧", "安宁", "宿命"];
 const ABILITY_DESC: Record<AbilityId, string> = {
-  敏慧: "排除当前选项中两个错误答案（立即生效）。",
-  安宁: "下一回合无论选择哪个选项，都视为正确答案。",
-  宿命: "接下来三个回合，随机显示染剂名称中的一个字。",
+  敏慧: "更换当前题目，并排除一个错误选项。",
+  安宁: "随机显示正确答案中的一个字。",
+  宿命: "直接使当前正确选项显现。",
 };
+// 能力栏位数量（最多同时持有 3 个能力，可重复）
+const ABILITY_SLOTS = 3;
 
 /**
  * 打乱数组（纯函数）
@@ -36,6 +38,7 @@ function randomInt(n: number): number {
 
 /** 以概率 p 判定是否命中 */
 function chance(p: number): boolean {
+  console.log(`chance(${p}) = ${Math.random() < p}`);
   return Math.random() < p;
 }
 
@@ -68,21 +71,17 @@ function GamePage() {
   const [results, setResults] = useState<boolean[]>([]);
 
   // ---- 能力系统 ----
-  // 已获得的能力（每轮各能力最多获得一次）
-  const [owned, setOwned] = useState<Set<AbilityId>>(new Set());
-  // 已使用的能力（本局不可再用）
-  const [used, setUsed] = useState<Set<AbilityId>>(new Set());
+  // 能力栏位（最多 3 个，可重复持有，null 表示空位）
+  const [slots, setSlots] = useState<(AbilityId | null)[]>(
+    Array(ABILITY_SLOTS).fill(null),
+  );
   // 待确认使用的能力
   const [confirmAbility, setConfirmAbility] = useState<AbilityId | null>(null);
   // 敏慧：本回合被排除的错误选项下标
   const [excluded, setExcluded] = useState<number[]>([]);
-  // 安宁：已按下、待下一回合生效
-  const [peaceArmed, setPeaceArmed] = useState(false);
-  // 安宁：当前回合作答视为正确
-  const [peaceActive, setPeaceActive] = useState(false);
-  // 宿命：剩余提示回合数
-  const [fateTurns, setFateTurns] = useState(0);
-  // 宿命：本回合提示字
+  // 宿命：当前回合正确选项显现
+  const [fateReveal, setFateReveal] = useState(false);
+  // 安宁：本回合提示字
   const [fateChar, setFateChar] = useState("");
   // 连续答对次数
   const [streak, setStreak] = useState(0);
@@ -92,8 +91,6 @@ function GamePage() {
   const [forgottenIndex, setForgottenIndex] = useState<number | null>(null);
   // 遗忘：本回合是否触发（用于显示徽标）
   const [forgetActive, setForgetActive] = useState(false);
-  // 遗忘：概率提升（使用安宁/宿命后的一个回合内 16%）
-  const [forgetElevated, setForgetElevated] = useState(false);
   // 遗忘：说明弹窗开关
   const [forgetModalOpen, setForgetModalOpen] = useState(false);
 
@@ -108,19 +105,15 @@ function GamePage() {
     changeTheEcho(false);
 
     // 重置能力与遗忘状态
-    setOwned(new Set());
-    setUsed(new Set());
+    setSlots(Array(ABILITY_SLOTS).fill(null));
     setConfirmAbility(null);
     setExcluded([]);
-    setPeaceArmed(false);
-    setPeaceActive(false);
-    setFateTurns(0);
+    setFateReveal(false);
     setFateChar("");
     setStreak(0);
     setForgetCount(0);
     setForgottenIndex(null);
     setForgetActive(false);
-    setForgetElevated(false);
     setForgetModalOpen(false);
 
     // 生成一批颜色，数量为 TURN
@@ -166,40 +159,23 @@ function GamePage() {
     setExcluded([]);
     setForgottenIndex(null);
     setForgetActive(false);
-
-    // 安宁：上一回合按下 → 本回合作答视为正确（仅此一回合）
-    if (peaceArmed) {
-      setPeaceActive(true);
-      setPeaceArmed(false);
-    } else {
-      setPeaceActive(false);
-    }
-
-    // 宿命：从答案名中随机取一个字作为提示
-    if (fateTurns > 0) {
-      const name = sel.name;
-      setFateChar(name[randomInt(name.length)]);
-      setFateTurns(fateTurns - 1);
-    } else {
-      setFateChar("");
-    }
+    setFateChar("");
+    setFateReveal(false);
 
     // 遗忘：本回合有概率使随机一个选项的文字消失（每局最多 2 次）
-    if (forgetCount < 2 && chance(forgetElevated ? 0.16 : 0.08)) {
+    if (forgetCount < 2 && chance(0.08)) {
       const fi = randomInt(fourSel.length);
       setForgottenIndex(fi);
       setForgetActive(true);
       setForgetCount(forgetCount + 1);
     }
-    setForgetElevated(false);
   }
 
   /**
    * 点击选项
    */
   function onSelect(option: Option) {
-    // 安宁生效时，无论选择哪个选项都视为正确答案
-    const effectiveCorrect = option.correctAnswer || peaceActive;
+    const effectiveCorrect = option.correctAnswer;
     const nextStreak = effectiveCorrect ? streak + 1 : 0;
     const nextScore = score + (effectiveCorrect ? 1 : 0);
 
@@ -207,16 +183,24 @@ function GamePage() {
     setScore(nextScore);
     setStreak(nextStreak);
 
-    // 连续答对后，每次答对获得能力的概率 = (连击数)*6% + 20%，封顶 100%
-    if (
-      effectiveCorrect &&
-      nextStreak >= 2 &&
-      chance(Math.min(0.2 + (nextStreak) * 0.06, 1))
-    ) {
-      const available = ABILITIES.filter((id) => !owned.has(id));
-      if (available.length > 0) {
-        const gained = available[randomInt(available.length)];
-        setOwned((prev) => new Set(prev).add(gained));
+    // 选对或选错都有 15% 概率获得能力；连击 ≥2 时概率提升为
+    // 40% + (连击数-2)*30%（封顶 100%）；获得能力后重置连击，重新累计
+    if (slots.includes(null)) {
+      const gainChance =
+        nextStreak >= 2
+          ? Math.min(0.4 + (nextStreak - 2) * 0.3, 1)
+          : 0.15;
+      if (chance(gainChance)) {
+        const gained = ABILITIES[randomInt(ABILITIES.length)];
+        setSlots((prev) => {
+          const i = prev.indexOf(null);
+          if (i === -1) return prev;
+          const next = [...prev];
+          next[i] = gained;
+          return next;
+        });
+        // 获得能力后重置连击
+        setStreak(1);
       }
     }
 
@@ -247,10 +231,57 @@ function GamePage() {
    */
   function confirmUse() {
     if (confirmAbility) {
-      setUsed((prev) => new Set(prev).add(confirmAbility));
+      // 使用后槽位回到空状态
+      setSlots((prev) => {
+        const i = prev.indexOf(confirmAbility);
+        if (i === -1) return prev;
+        const next = [...prev];
+        next[i] = null;
+        return next;
+      });
       applyAbility(confirmAbility);
     }
     setConfirmAbility(null);
+  }
+
+  /**
+   * 敏慧：更换当前题目（全新随机颜色，不与本局已出现的颜色重复）
+   */
+  function regenerateQuestion(): Option[] {
+    // 本局已用过的颜色（排除避免重复）
+    const usedColors = new Set(allAnswers.colors.map((c) => c.color));
+    const pool = colors.filter((c) => !usedColors.has(c.color));
+    const source = pool.length > 0 ? pool : colors;
+
+    let newColor = source[randomInt(source.length)];
+    let tries = 0;
+    while (newColor.color === answer.color && tries < 30) {
+      newColor = source[randomInt(source.length)];
+      tries++;
+    }
+
+    // 同步答案、结果页格子，并清空当前回合的提示/显现状态
+    setAnswer(newColor);
+    allAnswers.replaceLast(newColor);
+    setFateChar("");
+    setFateReveal(false);
+
+    // 生成四个新选项
+    const sameType = colors.filter(
+      (v) => v.type === newColor.type && v.color !== newColor.color,
+    );
+    shuffleArray(sameType);
+    const fourSel = new Array<Option>();
+    for (let i = 0; i < 3; i++) {
+      const item = sameType.pop();
+      if (item) {
+        fourSel.push(new Option(item, false));
+      }
+    }
+    fourSel.push(new Option(newColor, true));
+    shuffleArray(fourSel);
+    setOptions(fourSel);
+    return fourSel;
   }
 
   /**
@@ -258,12 +289,13 @@ function GamePage() {
    */
   function applyAbility(id: AbilityId) {
     if (id === "敏慧") {
-      // 排除当前选项中的两个错误答案
-      const wrongIndexes = options
+      // 更换当前题目，并排除一个错误选项
+      const newOptions = regenerateQuestion();
+      const wrongIndexes = newOptions
         .map((v, i) => (v.correctAnswer ? -1 : i))
         .filter((i) => i >= 0);
       shuffleArray(wrongIndexes);
-      setExcluded(wrongIndexes.slice(0, 2));
+      setExcluded(wrongIndexes.slice(0, 1));
 
       // 若当前回合存在遗忘效果，则取消遗忘效果（恢复文字、隐藏徽标）
       if (forgottenIndex !== null || forgetActive) {
@@ -271,11 +303,11 @@ function GamePage() {
         setForgetActive(false);
       }
     } else if (id === "安宁") {
-      setPeaceArmed(true);
-      setForgetElevated(true);
+      // 随机显示正确答案中的一个字
+      setFateChar(answer.name[randomInt(answer.name.length)]);
     } else if (id === "宿命") {
-      setFateTurns(3);
-      setForgetElevated(true);
+      // 直接使当前正确选项显现
+      setFateReveal(true);
     }
   }
 
@@ -398,26 +430,29 @@ function GamePage() {
           </div>
 
           <div className={start ? "game-section" : "game-section-hidden"}>
-            {/* 能力栏：敏慧 / 安宁 / 宿命 / 超越之力 / 遗忘徽标 */}
+            {/* 能力栏：3 个占位槽 / 超越之力 / 遗忘徽标 */}
             <div className="game-ability-bar">
-              {ABILITIES.map((id) => {
-                const has = owned.has(id);
-                const isUsed = used.has(id);
-                const available = has && !isUsed;
-                return (
+              {slots.map((id, i) =>
+                id ? (
                   <button
-                    key={id}
-                    className={`game-ability-btn${
-                      available ? " game-ability-available" : ""
-                    }${has && !available ? " game-ability-used" : ""}`}
+                    key={i}
+                    className="game-ability-btn game-ability-available"
                     onClick={() => openConfirm(id)}
-                    disabled={!available}
                     title={ABILITY_DESC[id]}
                   >
                     {id}
                   </button>
-                );
-              })}
+                ) : (
+                  <button
+                    key={i}
+                    className="game-ability-btn"
+                    disabled
+                    title="空位"
+                  >
+                    空
+                  </button>
+                ),
+              )}
               {showEcho && (
                 <button
                   className={`game-echo-btn${theEcho ? " game-echo-active" : ""}`}
@@ -430,7 +465,7 @@ function GamePage() {
                 <button
                   className="game-forget-badge"
                   onClick={() => setForgetModalOpen(true)}
-                  title="查看遗忘说明"
+                  title="遗忘"
                 >
                   遗忘
                 </button>
@@ -443,14 +478,6 @@ function GamePage() {
               <span className="game-play-info-value">{TURN}</span> 罐
               <span className="game-sep"> · </span>
               已认出：<span className="game-play-info-value">{score}</span>
-              {streak >= 2 && (
-                <>
-                  <span className="game-sep"> · </span>
-                  <span className="game-streak">
-                    连击 <span className="game-play-info-value">{streak - 1}</span>
-                  </span>
-                </>
-              )}
             </p>
 
             <div className="game-color-area">
@@ -459,7 +486,7 @@ function GamePage() {
                 style={{ background: answer.color }}
               />
               <p className="game-color-hex">{answer.color}</p>
-              {fateChar && <p className="game-fate-hint">提示字：{fateChar}</p>}
+              {fateChar && <p className="game-fate-hint">若隐若现的字：{fateChar}</p>}
             </div>
 
             <div className="game-options">
@@ -470,14 +497,14 @@ function GamePage() {
                   <button
                     key={i}
                     className={`game-option-btn${
-                      (theEcho && v.correctAnswer) || peaceActive
+                      (theEcho || fateReveal) && v.correctAnswer
                         ? " game-option-correct"
                         : ""
                     }${isExcluded ? " game-option-excluded" : ""}`}
                     onClick={() => onSelect(v)}
                     disabled={isExcluded}
                   >
-                    {isForgotten ? "" : v.color.name}
+                    {isForgotten ? "?" : v.color.name}
                   </button>
                 );
               })}
@@ -514,7 +541,7 @@ function GamePage() {
             width={360}
           >
             <p className="game-confirm-desc">
-              明明就在嘴边，但就是想不出那个颜色的名字
+              明明已经在嘴边，但你始终说不出那个染剂的名字
               <br />
               <Text strong>你忘了</Text>
             </p>

@@ -561,6 +561,12 @@
   text-decoration: line-through;
 }
 
+/* 空位槽 */
+.game-ability-btn:disabled {
+  border-style: dashed;
+  opacity: 0.25;
+}
+
 /* ========== 遗忘徽标 ========== */
 .game-forget-badge {
   padding: 6px 14px;
@@ -576,17 +582,12 @@
   outline: none;
   -webkit-tap-highlight-color: transparent;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: game-forget-pulse 0.9s ease-in-out infinite;
 }
 
 @media (hover: hover) {
   .game-forget-badge:hover {
     background: color-mix(in srgb, #c9a14f 16%, var(--color-card));
   }
-}
-
-.game-forget-badge:active {
-  transform: scale(0.95);
 }
 
 @keyframes game-forget-pulse {
@@ -651,6 +652,15 @@
   line-height: 1.7;
   color: var(--color-text);
   opacity: 0.75;
+}
+
+.ant-modal-mask-blur {
+  backdrop-filter: blur(8px) !important;
+}
+
+/* ========== 黑暗模式下弹窗背景提亮 ========== */
+[data-theme="dark"] .ant-modal-container {
+  background: #292929;
 }
 
 /* ========== 响应式 ========== */
