@@ -447,10 +447,9 @@ function GamePage() {
                     key={i}
                     className="game-ability-btn"
                     disabled
-                    title="空位"
-                  >
-                    空
-                  </button>
+                    title="这里应该有些什么"
+                    aria-label="空位"
+                  />
                 ),
               )}
               {showEcho && (
@@ -541,7 +540,7 @@ function GamePage() {
             width={360}
           >
             <p className="game-confirm-desc">
-              明明已经在嘴边，但你始终说不出那个染剂的名字
+              明明已经在嘴边，但你始终想不起来染剂的名字
               <br />
               <Text strong>你忘了</Text>
             </p>

@@ -525,7 +525,11 @@
 }
 
 .game-ability-btn {
-  padding: 6px 14px;
+  width: 56px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 16px;
   border: 1.5px solid color-mix(in srgb, var(--color-ring) 12%, transparent);
   background: color-mix(in srgb, var(--color-ring) 2%, var(--color-card));
@@ -564,7 +568,8 @@
 /* 空位槽 */
 .game-ability-btn:disabled {
   border-style: dashed;
-  opacity: 0.25;
+  border-color: color-mix(in srgb, var(--color-ring) 35%, transparent);
+  opacity: 0.9;
 }
 
 /* ========== 遗忘徽标 ========== */
