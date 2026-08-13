@@ -1,7 +1,8 @@
 /* ===== K-Means++ 聚类 + LAB 空间合并算法 ===== */
 
 import type { LabPixel, ExtractParams, ExtractResult, PaletteColor } from './types'
-import { rgbToLab, rgbToHex, rgbToHsl } from './colorSpace'
+import { rgbToLab } from '../color'
+import { rgbToHex, rgbToHsl } from './colorSpace'
 
 /* ---------- RGB K-Means++ ---------- */
 
@@ -39,7 +40,7 @@ function kmeansRgb(
       dists[i] = minD
       total += minD
     }
-    let r = Math.random() * total
+    const r = Math.random() * total
     let idx = 0
     for (let cum = 0; idx < n; idx++) {
       cum += dists[idx]
@@ -297,7 +298,8 @@ export function extractColors(
     if (sse < bestSSE) { bestSSE = sse; bestResult = result }
   }
 
-  let { centroids: rgbCentroids, labels } = bestResult!
+  const { centroids: rgbCentroids } = bestResult!
+  let { labels } = bestResult!
 
   // RGB 中心 → LAB
   let labCentroids: LabCentroid[] = rgbCentroids.map(c => {

@@ -42,7 +42,11 @@ export function useAutoSwitch(
 ) {
   // 用 ref 持有最新回调，避免闭包过期
   const switchNextRef = useRef(switchNext)
-  switchNextRef.current = switchNext
+
+  // 在 effect 中同步最新回调（避免渲染期间写 ref）
+  useEffect(() => {
+    switchNextRef.current = switchNext
+  })
 
   useEffect(() => {
     if (!isActive) return

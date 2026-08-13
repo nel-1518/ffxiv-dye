@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { Scheme } from '../types/scheme'
 import type { ResolvedTheme } from './useTheme'
 
@@ -75,14 +75,10 @@ export function useScheme(schemes: Scheme[], resolvedTheme: ResolvedTheme) {
     [applyScheme],
   )
 
-  // 首次初始化：写入 CSS 变量
-  if (typeof window !== 'undefined') {
-    const key = '__chroma_initialized'
-    if (!(window as any)[key]) {
-      applySchemeToDOM(currentScheme, resolvedTheme)
-      ;(window as any)[key] = true
-    }
-  }
+  // 首次初始化 / 主题或方案变化时：写入 CSS 变量（渲染后执行，避免渲染期修改外部状态）
+  useEffect(() => {
+    applySchemeToDOM(currentScheme, resolvedTheme)
+  }, [currentScheme, resolvedTheme])
 
   return {
     currentScheme,

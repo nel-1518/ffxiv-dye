@@ -53,6 +53,8 @@ function GamePage() {
     setScore(0);
     setStart(true);
     setPlayed(false);
+    setTurn(0);
+    changeTheEcho(false);
 
     // 生成一批颜色，数量为 TURN
     const copyColors = [...colors];
@@ -66,12 +68,11 @@ function GamePage() {
    * 点击选项后更换当前颜色
    */
   function changeColor() {
-    setTurn(turn + 1);
+    setTurn((t) => t + 1);
 
     // 获取当前答案
     const sel = allAnswers.next();
     setAnswer(sel);
-    console.log(sel.name);
 
     // 找到类似的颜色并打乱
     const sameType = colors.filter(
@@ -243,10 +244,11 @@ function GamePage() {
 
           <div className={start ? "game-section" : "game-section-hidden"}>
             <p className="game-play-info">
-              剩余次数：
-              <span className="game-play-info-value">{TURN - turn}</span>
-              <span className="game-sep">/</span>
-              得分：<span className="game-play-info-value">{score}</span>
+              第 <span className="game-play-info-value">{turn}</span>
+              <span className="">/</span>
+              <span className="game-play-info-value">{TURN}</span> 罐
+              <span className="game-sep"> · </span>
+              已认出：<span className="game-play-info-value">{score}</span>
             </p>
 
             <div className="game-color-area">

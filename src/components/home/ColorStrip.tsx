@@ -3,7 +3,6 @@ import ColorDot from './ColorDot'
 
 interface ColorStripProps {
   diamonds: SchemeDiamond[]
-  dyeMap: Record<string, string>
 }
 
 function ColorStrip({ diamonds }: ColorStripProps) {

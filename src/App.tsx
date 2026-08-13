@@ -51,13 +51,13 @@ function AppContent() {
     >
       <NavBar mode={mode} resolvedTheme={resolvedTheme} onThemeChange={setMode} />
       <div className="page-content">
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/grab" element={<ExtractPage />} />
-        <Route path="/game" element={<GamePage />} />
-        <Route path="/scheme" element={<SchemePage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/grab" element={<ExtractPage />} />
+          <Route path="/game" element={<GamePage />} />
+          <Route path="/scheme" element={<SchemePage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </div>
     </ConfigProvider>
   )

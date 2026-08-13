@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { message } from 'antd'
 import type { PaletteColor } from '../../utils/algorithms/types'
 import { findDyeMatches, type DyeMatch } from './dyeMatcher'
+import { relativeLuminance, rgbRelativeLuminance } from '../../utils/color'
 
 interface DyeMatchViewProps {
   palette: PaletteColor[]
@@ -35,11 +36,13 @@ export default function DyeMatchView({ palette }: DyeMatchViewProps) {
 
   const [hoveredSiblings, setHoveredSiblings] = useState<Set<number>>(new Set())
 
-  /* palette 变化时重置 hover */
-  useEffect(() => {
+  /* palette 变化时重置 hover（render 中条件调整 state，避免 effect 级联渲染） */
+  const [lastPalette, setLastPalette] = useState(palette)
+  if (lastPalette !== palette) {
+    setLastPalette(palette)
     setHoveredIdx(null)
     setHoveredSiblings(new Set())
-  }, [palette])
+  }
 
   /* ---------- 计算曲线路径 ---------- */
 
@@ -163,7 +166,7 @@ export default function DyeMatchView({ palette }: DyeMatchViewProps) {
         <div className="dye-match-column dye-match-left">
           <div className="dye-match-column-header">提取色</div>
           {matches.map(m => {
-            const lum = relativeLuminance(m.extracted.r, m.extracted.g, m.extracted.b)
+            const lum = rgbRelativeLuminance(m.extracted.r, m.extracted.g, m.extracted.b)
             const textColor = lum > 0.45 ? '#1a1a2e' : '#ffffff'
             const isActive = hoveredIdx !== null && hoveredSiblings.has(m.index)
             return (
@@ -192,7 +195,7 @@ export default function DyeMatchView({ palette }: DyeMatchViewProps) {
         <div className="dye-match-column dye-match-right">
           <div className="dye-match-column-header">染剂颜色</div>
           {deduplicatedRight(matches).map(m => {
-            const lum = relativeLuminance2(m.dye.hex)
+            const lum = relativeLuminance(m.dye.hex)
             const textColor = lum > 0.45 ? '#1a1a2e' : '#ffffff'
             const isActive = hoveredIdx !== null && hoveredSiblings.has(m.index)
             return (
@@ -233,28 +236,6 @@ function deduplicatedRight(matches: DyeMatch[]): DyeMatch[] {
     }
   }
   return result
-}
-
-/* ---------- 相对亮度（从 hex） ---------- */
-
-function relativeLuminance2(hex: string): number {
-  const h = hex.replace('#', '')
-  const r = parseInt(h.slice(0, 2), 16)
-  const g = parseInt(h.slice(2, 4), 16)
-  const b = parseInt(h.slice(4, 6), 16)
-  const sr = (c: number) => {
-    c /= 255
-    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
-  }
-  return 0.2126 * sr(r) + 0.7152 * sr(g) + 0.0722 * sr(b)
-}
-
-function relativeLuminance(r: number, g: number, b: number): number {
-  const sr = (c: number) => {
-    c /= 255
-    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
-  }
-  return 0.2126 * sr(r) + 0.7152 * sr(g) + 0.0722 * sr(b)
 }
 
 /* ---------- 降级复制（clipboard 不可用时） ---------- */

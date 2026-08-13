@@ -1,20 +1,11 @@
 /* ===== 提取结果色卡网格组件 ===== */
 
 import type { PaletteColor } from '../../utils/algorithms/types'
+import { rgbRelativeLuminance } from '../../utils/color'
 
 interface PaletteGridProps {
   palette: PaletteColor[]
   onCopyColor: (hex: string) => void
-}
-
-/* ---------- 相对亮度（决定色块文字颜色） ---------- */
-
-function relativeLuminance(r: number, g: number, b: number): number {
-  const sr = (c: number) => {
-    c /= 255
-    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
-  }
-  return 0.2126 * sr(r) + 0.7152 * sr(g) + 0.0722 * sr(b)
 }
 
 /* ---------- 组件 ---------- */
@@ -24,7 +15,7 @@ export default function PaletteGrid({ palette, onCopyColor }: PaletteGridProps) 
     <div className="extract-results">
       <div className="extract-palette-grid">
         {palette.map((color, idx) => {
-          const lum = relativeLuminance(color.r, color.g, color.b)
+          const lum = rgbRelativeLuminance(color.r, color.g, color.b)
           const textColor = lum > 0.45 ? '#1a1a2e' : '#ffffff'
           return (
             <div

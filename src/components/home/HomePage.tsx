@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import colorData from '../../data/colors.json'
-import type { Color } from '../../types/color'
 import { schemes } from '../../data/schemes'
 import { useTheme } from '../../hooks/useTheme'
 import { useScheme, reapplyScheme } from '../../hooks/useScheme'
@@ -37,15 +35,6 @@ function HomePage() {
   // 自动轮播：每 3 秒切换一次配色
   useAutoSwitch(switchNext, isAutoPlaying)
 
-  // 构建 hex → dye 查询表
-  const dyeMap = useMemo(() => {
-    const map: Record<string, string> = {}
-    ;(colorData as Color[]).forEach((c) => {
-      map[c.color] = c.dye
-    })
-    return map
-  }, [])
-
   // 主题切换时重新应用当前方案的 CSS 变量
   useEffect(() => {
     reapplyScheme(currentScheme, resolvedTheme)
@@ -78,7 +67,7 @@ function HomePage() {
 
           <div className="divider" />
 
-          <ColorStrip diamonds={currentScheme.diamonds} dyeMap={dyeMap} />
+          <ColorStrip diamonds={currentScheme.diamonds} />
 
           <nav className="nav-grid">
             <button className="nav-card" onClick={() => navigate('/grab')}>

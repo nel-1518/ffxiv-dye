@@ -165,7 +165,7 @@ function ExtractPage() {
     } finally {
       setLoading(false)
     }
-  }, [dynamicK, initialK, runExtraction, setLoading, setResult, setImageDataUrl, setImageLoaded, setHistogramInfo])
+  }, [algorithmKey, dynamicK, initialK, runExtraction, setLoading, setResult, setImageDataUrl, setImageLoaded, setHistogramInfo])
 
   const handleExtract = useCallback(async () => {
     if (!cachedImageRef.current) {
@@ -200,7 +200,7 @@ function ExtractPage() {
 
     await runExtraction(cachedLabPixels.current!, k)
     setLoading(false)
-  }, [dynamicK, initialK, runExtraction, setLoading, setResult, setHistogramInfo])
+  }, [algorithmKey, dynamicK, initialK, runExtraction, setLoading, setResult, setHistogramInfo])
 
   /* ---------- 文件上传 ---------- */
 

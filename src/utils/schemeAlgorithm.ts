@@ -3,6 +3,8 @@
  * 参考 scheme-sample.html 的 Chroma.js 实现，纯 TypeScript 版本，无额外依赖。
  */
 
+import { hexToRgb, rgbToHsl, relativeLuminance, contrastRatio, hueDiff } from './color'
+
 /* ---------- 类型 ---------- */
 
 export type SchemeMode = 'smart' | 'complementary' | 'analogous' | 'triadic'
@@ -14,84 +16,6 @@ export interface SchemeResult {
   contrastRatio: number
   /** WCAG 级别 */
   wcagLevel: 'AAA' | 'AA' | 'FAIL'
-}
-
-/* ---------- HSL 类型 ---------- */
-
-interface HSL {
-  h: number // 0-360
-  s: number // 0-1
-  l: number // 0-1
-}
-
-/* ---------- hex → RGB ---------- */
-
-function hexToRgb(hex: string): { r: number; g: number; b: number } {
-  const h = hex.replace('#', '')
-  return {
-    r: parseInt(h.slice(0, 2), 16),
-    g: parseInt(h.slice(2, 4), 16),
-    b: parseInt(h.slice(4, 6), 16),
-  }
-}
-
-/* ---------- RGB → HSL ---------- */
-
-function rgbToHsl(r: number, g: number, b: number): HSL {
-  const rn = r / 255
-  const gn = g / 255
-  const bn = b / 255
-  const max = Math.max(rn, gn, bn)
-  const min = Math.min(rn, gn, bn)
-  const l = (max + min) / 2
-
-  if (max === min) return { h: 0, s: 0, l }
-
-  const d = max - min
-  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-  let h = 0
-  switch (max) {
-    case rn:
-      h = ((gn - bn) / d + (gn < bn ? 6 : 0)) / 6
-      break
-    case gn:
-      h = ((bn - rn) / d + 2) / 6
-      break
-    case bn:
-      h = ((rn - gn) / d + 4) / 6
-      break
-  }
-
-  return { h: h * 360, s, l }
-}
-
-/* ---------- 相对亮度 (WCAG) ---------- */
-
-function srgbLinear(c: number): number {
-  c /= 255
-  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
-}
-
-function relativeLuminance(hex: string): number {
-  const { r, g, b } = hexToRgb(hex)
-  return 0.2126 * srgbLinear(r) + 0.7152 * srgbLinear(g) + 0.0722 * srgbLinear(b)
-}
-
-/* ---------- 对比度 (WCAG) ---------- */
-
-function contrastRatio(hex1: string, hex2: string): number {
-  const l1 = relativeLuminance(hex1)
-  const l2 = relativeLuminance(hex2)
-  const lighter = Math.max(l1, l2)
-  const darker = Math.min(l1, l2)
-  return (lighter + 0.05) / (darker + 0.05)
-}
-
-/* ---------- 色相差值 (环形) ---------- */
-
-function hueDiff(h1: number, h2: number): number {
-  const d = Math.abs(h1 - h2)
-  return Math.min(d, 360 - d)
 }
 
 /* ---------- 种子随机 ---------- */
