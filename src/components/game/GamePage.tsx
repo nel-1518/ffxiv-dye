@@ -38,7 +38,6 @@ function randomInt(n: number): number {
 
 /** 以概率 p 判定是否命中 */
 function chance(p: number): boolean {
-  console.log(`chance(${p}) = ${Math.random() < p}`);
   return Math.random() < p;
 }
 

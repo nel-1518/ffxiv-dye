@@ -74,6 +74,6 @@ export function extractPixelsFromImage(
 export function pixelsToLab(pixels: RgbPixel[]): LabPixel[] {
   return pixels.map(p => {
     const lab = rgbToLab(p.r, p.g, p.b)
-    return { l: lab.l, a: lab.a, b: p.b, r: p.r, g: p.g }
+    return { l: lab.l, a: lab.a, labB: lab.b, b: p.b, r: p.r, g: p.g }
   })
 }

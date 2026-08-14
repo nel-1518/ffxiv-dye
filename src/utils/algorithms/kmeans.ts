@@ -114,7 +114,7 @@ function kmeansRgb(
 
 /* ---------- LAB 空间合并 ---------- */
 
-interface LabCentroid { l: number; a: number; b: number }
+interface LabCentroid { l: number; a: number; labB: number }
 
 function mergeCloseClusters(
   filteredPixels: LabPixel[],
@@ -130,7 +130,7 @@ function mergeCloseClusters(
     clusters[initialLabels[i]].push(i)
   }
 
-  const currentCentroids = initialCentroids.map(c => ({ l: c.l, a: c.a, b: c.b }))
+  const currentCentroids = initialCentroids.map(c => ({ l: c.l, a: c.a, labB: c.labB }))
   const activeClusters = new Array(k).fill(true)
   let merged = 0
 
@@ -149,7 +149,7 @@ function mergeCloseClusters(
         const j = activeIndices[b]
         const dl = currentCentroids[i].l - currentCentroids[j].l
         const da = currentCentroids[i].a - currentCentroids[j].a
-        const db = currentCentroids[i].b - currentCentroids[j].b
+        const db = currentCentroids[i].labB - currentCentroids[j].labB
         const dist = Math.sqrt(dl * dl + da * da + db * db)
         if (dist < minDist) { minDist = dist; mergePair = [i, j] }
       }
@@ -162,10 +162,10 @@ function mergeCloseClusters(
       for (const idx of mergedPixels) {
         sumL += filteredPixels[idx].l
         sumA += filteredPixels[idx].a
-        sumB += filteredPixels[idx].b
+        sumB += filteredPixels[idx].labB
       }
       const count = mergedPixels.length
-      currentCentroids[c1] = { l: sumL / count, a: sumA / count, b: sumB / count }
+      currentCentroids[c1] = { l: sumL / count, a: sumA / count, labB: sumB / count }
       clusters[c1] = mergedPixels
       activeClusters[c2] = false
       clusters[c2] = []
@@ -206,7 +206,7 @@ function mergeToTargetCount(
     clusters[initialLabels[i]].push(i)
   }
 
-  const currentCentroids = initialCentroids.map(c => ({ l: c.l, a: c.a, b: c.b }))
+  const currentCentroids = initialCentroids.map(c => ({ l: c.l, a: c.a, labB: c.labB }))
   const currentClusters = clusters.map(c => [...c])
   const active = new Array(k).fill(true)
   let activeCount = k
@@ -224,7 +224,7 @@ function mergeToTargetCount(
         const i = activeIds[a], j = activeIds[b]
         const dl = currentCentroids[i].l - currentCentroids[j].l
         const da = currentCentroids[i].a - currentCentroids[j].a
-        const db = currentCentroids[i].b - currentCentroids[j].b
+        const db = currentCentroids[i].labB - currentCentroids[j].labB
         const dist = Math.sqrt(dl * dl + da * da + db * db)
         if (dist < minDist) { minDist = dist; pair = [i, j] }
       }
@@ -236,10 +236,10 @@ function mergeToTargetCount(
     for (const idx of mergedPixels) {
       sumL += filteredPixels[idx].l
       sumA += filteredPixels[idx].a
-      sumB += filteredPixels[idx].b
+      sumB += filteredPixels[idx].labB
     }
     const count = mergedPixels.length
-    currentCentroids[c1] = { l: sumL / count, a: sumA / count, b: sumB / count }
+    currentCentroids[c1] = { l: sumL / count, a: sumA / count, labB: sumB / count }
     currentClusters[c1] = mergedPixels
     active[c2] = false
     currentClusters[c2] = []
@@ -304,7 +304,7 @@ export function extractColors(
   // RGB 中心 → LAB
   let labCentroids: LabCentroid[] = rgbCentroids.map(c => {
     const lab = rgbToLab(Math.round(c.r), Math.round(c.g), Math.round(c.b))
-    return { l: lab.l, a: lab.a, b: lab.b }
+    return { l: lab.l, a: lab.a, labB: lab.b }
   })
 
   let mergedCount = 0
@@ -336,7 +336,7 @@ export function extractColors(
     if (cl === -1) continue
     clusterCounts[cl]++
     const ct = labCentroids[cl]
-    const dl = filtered[i].l - ct.l, da = filtered[i].a - ct.a, db = filtered[i].b - ct.b
+    const dl = filtered[i].l - ct.l, da = filtered[i].a - ct.a, db = filtered[i].labB - ct.labB
     const dist = dl * dl + da * da + db * db
     if (dist < bestDists[cl]) {
       bestDists[cl] = dist

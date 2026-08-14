@@ -9,7 +9,8 @@ export interface RgbPixel {
 export interface LabPixel {
   l: number
   a: number
-  b: number   // RGB blue channel
+  labB: number   // LAB b channel
+  b: number      // RGB blue channel
   r: number
   g: number
 }
