@@ -65,18 +65,17 @@ function ColorSwatch({
   onClick: () => void
 }) {
   return (
-    <Tooltip title={`${color.name} ${color.color}`}>
-      <button
-        className="scheme-swatch"
-        style={{ backgroundColor: color.color }}
-        onClick={onClick}
-        aria-label={`选择 ${color.name}`}
-      >
-        {isSelected && (
-          <CheckOutlined className="scheme-swatch__check" />
-        )}
-      </button>
-    </Tooltip>
+    <button
+      className="scheme-swatch color-tip"
+      style={{ backgroundColor: color.color }}
+      onClick={onClick}
+      aria-label={`选择 ${color.name}`}
+      data-tip={`${color.name} ${color.color}`}
+    >
+      {isSelected && (
+        <CheckOutlined className="scheme-swatch__check" />
+      )}
+    </button>
   )
 }
 
@@ -111,16 +110,16 @@ function SchemeCard({ item, viewMode, showLabels }: { item: SchemeResultItem; vi
       ) : (
         <div className="scheme-circle-row">
           {item.colors.map((hex, i) => (
-            <Tooltip key={i} title={`${COLORS.find((c) => c.color === hex)?.name ?? ''} ${hex.toUpperCase()}`}>
-              <div
-                className="scheme-circle-swatch"
-                style={{ backgroundColor: hex }}
-              >
-                {showLabels && (
-                  <span className="scheme-circle-swatch__hex">{hex.toUpperCase()}</span>
-                )}
-              </div>
-            </Tooltip>
+            <div
+              key={i}
+              className="scheme-circle-swatch color-tip"
+              style={{ backgroundColor: hex }}
+              data-tip={`${COLORS.find((c) => c.color === hex)?.name ?? ''} ${hex.toUpperCase()}`}
+            >
+              {showLabels && (
+                <span className="scheme-circle-swatch__hex">{hex.toUpperCase()}</span>
+              )}
+            </div>
           ))}
         </div>
       )}
@@ -208,10 +207,10 @@ function SchemePage() {
                   {selectedColors.map((hex) => (
                     <span
                       key={hex}
-                      className="scheme-pool-chip"
+                      className="scheme-pool-chip color-tip"
                       style={{ backgroundColor: hex }}
                       onClick={() => handleSwatchClick(hex)}
-                      title={`点击移除 ${COLORS.find((c) => c.color === hex)?.name ?? hex}`}
+                      data-tip={`${COLORS.find((c) => c.color === hex)?.name ?? hex} ${hex.toUpperCase()}`}
                     />
                   ))}
                 </div>

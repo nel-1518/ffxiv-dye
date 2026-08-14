@@ -178,58 +178,6 @@
     box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.game-cell::after {
-  content: attr(data-name) " " attr(data-hex);
-  position: absolute;
-  bottom: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  background: #2b2b2b;
-  color: #fff;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 12px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
-}
-
-.game-cell::before {
-  content: "";
-  position: absolute;
-  bottom: calc(100% + 3px);
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid #2b2b2b;
-  pointer-events: none;
-  opacity: 0;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-}
-
-.game-cell:hover {
-  transform: translateY(-4px) scale(1.14);
-  box-shadow: 0 9px 22px rgba(0, 0, 0, 0.16);
-  z-index: 10;
-}
-
-.game-cell:hover::after,
-.game-cell:hover::before {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
 .game-cell:active {
   transform: scale(0.95);
 }

@@ -398,10 +398,9 @@ function GamePage() {
                   {allAnswers.colors.map((v, i) => (
                     <span
                       key={i}
-                      className="game-cell"
+                      className="game-cell color-tip"
                       style={{ background: v.color }}
-                      data-name={v.name}
-                      data-hex={v.color}
+                      data-tip={`${v.name} ${v.color}`}
                     >
                       {results[i] && <CheckOutlined className="game-cell-check" />}
                     </span>

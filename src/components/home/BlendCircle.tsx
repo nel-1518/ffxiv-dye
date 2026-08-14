@@ -10,7 +10,7 @@ interface BlendCircleProps {
 function BlendCircle({ hex, name, cx, cy, d, index }: BlendCircleProps) {
   return (
     <div
-      className={`blend-circle c${index}`}
+      className={`blend-circle c${index} color-tip`}
       style={{
         left: cx - d / 2 + '%',
         top: cy - d / 2 + '%',
@@ -18,7 +18,7 @@ function BlendCircle({ hex, name, cx, cy, d, index }: BlendCircleProps) {
         height: d + '%',
         backgroundColor: hex,
       }}
-      data-name={name}
+      data-tip={`${name} ${hex}`}
     />
   )
 }

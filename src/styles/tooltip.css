@@ -1,0 +1,53 @@
+/* ==================== 统一颜色悬停 Tip ====================
+ * 所有“指向颜色”的提示统一使用首页 color-dot 的样式：
+ * 深色圆角气泡 + 下方小箭头，悬停时向上滑入浮现。
+ * 用法：给颜色元素加上 .color-tip 类，并设置 data-tip="名称 #HEX"
+ */
+.color-tip {
+  position: relative;
+}
+
+.color-tip::after,
+.color-tip::before {
+  position: absolute;
+  left: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+/* 气泡 */
+.color-tip::after {
+  content: attr(data-tip);
+  bottom: calc(100% + 12px);
+  transform: translateX(-50%) translateY(8px);
+  background: #2b2b2b;
+  color: #fff;
+  font-size: 13px;
+  padding: 5px 13px;
+  border-radius: 14px;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+  z-index: 30;
+}
+
+/* 箭头 */
+.color-tip::before {
+  content: '';
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%) translateY(8px);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #2b2b2b;
+  z-index: 30;
+}
+
+.color-tip:hover::after,
+.color-tip:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

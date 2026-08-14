@@ -8,10 +8,9 @@ interface ColorDotProps {
 function ColorDot({ hex, name }: ColorDotProps): ReactElement {
   return (
     <span
-      className="color-dot"
+      className="color-dot color-tip"
       style={{ backgroundColor: hex }}
-      data-name={name}
-      title={`${name} (${hex})`}
+      data-tip={`${name} ${hex}`}
     />
   )
 }
