@@ -465,11 +465,28 @@
 /* ========== 能力栏 ========== */
 .game-ability-bar {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* 能力槽行：3 个能力从左向右排列 */
+.game-ability-slots {
+  display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 20px;
+}
+
+/* 额外按钮行：超越之力 / 遗忘 */
+.game-ability-extras {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .game-ability-btn {

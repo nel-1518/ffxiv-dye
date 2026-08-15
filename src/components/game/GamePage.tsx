@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, Typography } from "antd";
+import { Modal } from "antd";
 import type { Color } from "../../types/color";
 import { Answers } from "./Answers";
 import { CheckOutlined } from '@ant-design/icons'
@@ -187,11 +187,11 @@ function GamePage() {
     setStreak(nextStreak);
 
     // 选对或选错都有 15% 概率获得能力；连击 ≥2 时概率提升为
-    // 40% + (连击数-2)*30%（封顶 100%）；获得能力后重置连击，重新累计
+    // 40% + (连击数-2)*20%（封顶 100%）；获得能力后重置连击，重新累计
     if (slots.includes(null)) {
       const gainChance =
         nextStreak >= 2
-          ? Math.min(0.4 + (nextStreak - 2) * 0.3, 1)
+          ? Math.min(0.4 + (nextStreak - 2) * 0.2, 1)
           : 0.15;
       if (chance(gainChance)) {
         const gained = ABILITIES[randomInt(ABILITIES.length)];
@@ -234,13 +234,17 @@ function GamePage() {
    */
   function confirmUse() {
     if (confirmAbility) {
-      // 使用后槽位回到空状态
+      // 使用后槽位回到空状态，并将右侧能力向左补位
       setSlots((prev) => {
         const i = prev.indexOf(confirmAbility);
         if (i === -1) return prev;
         const next = [...prev];
         next[i] = null;
-        return next;
+        const filled = next.filter((id) => id !== null);
+        return [
+          ...filled,
+          ...Array(ABILITY_SLOTS - filled.length).fill(null),
+        ];
       });
       applyAbility(confirmAbility);
     }
@@ -432,45 +436,49 @@ function GamePage() {
           </div>
 
           <div className={start ? "game-section" : "game-section-hidden"}>
-            {/* 能力栏：3 个占位槽 / 超越之力 / 遗忘徽标 */}
+            {/* 能力栏：第一行 3 个能力槽，第二行 超越之力 / 遗忘徽标 */}
             <div className="game-ability-bar">
-              {slots.map((id, i) =>
-                id ? (
+              <div className="game-ability-slots">
+                {slots.map((id, i) =>
+                  id ? (
+                    <button
+                      key={i}
+                      className="game-ability-btn game-ability-available"
+                      onClick={() => openConfirm(id)}
+                      title={ABILITY_DESC[id]}
+                    >
+                      {id}
+                    </button>
+                  ) : (
+                    <button
+                      key={i}
+                      className="game-ability-btn"
+                      disabled
+                      title="这里应该有些什么"
+                      aria-label="空位"
+                    />
+                  ),
+                )}
+              </div>
+              <div className="game-ability-extras">
+                {showEcho && (
                   <button
-                    key={i}
-                    className="game-ability-btn game-ability-available"
-                    onClick={() => openConfirm(id)}
-                    title={ABILITY_DESC[id]}
+                    className={`game-echo-btn${theEcho ? " game-echo-active" : ""}`}
+                    onClick={() => changeTheEcho(!theEcho)}
                   >
-                    {id}
+                    超越之力
                   </button>
-                ) : (
+                )}
+                {forgetActive && (
                   <button
-                    key={i}
-                    className="game-ability-btn"
-                    disabled
-                    title="这里应该有些什么"
-                    aria-label="空位"
-                  />
-                ),
-              )}
-              {showEcho && (
-                <button
-                  className={`game-echo-btn${theEcho ? " game-echo-active" : ""}`}
-                  onClick={() => changeTheEcho(!theEcho)}
-                >
-                  超越之力
-                </button>
-              )}
-              {forgetActive && (
-                <button
-                  className="game-forget-badge"
-                  onClick={() => setForgetModalOpen(true)}
-                  title="使随机一个选项的文字消失"
-                >
-                  遗忘
-                </button>
-              )}
+                    className="game-forget-badge"
+                    onClick={() => setForgetModalOpen(true)}
+                    title="使随机一个选项的文字消失"
+                  >
+                    遗忘
+                  </button>
+                )}
+              </div>
             </div>
 
             <p className="game-play-info">
