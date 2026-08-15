@@ -56,7 +56,7 @@ export default function KMeansPanel({
       {/* 目标颜色数 */}
       {mergeMode === "target" && (
         <div className="extract-control-row">
-          <span className="extract-control-label">目标颜色数</span>
+          <span className="extract-control-label">颜色数量</span>
           <div className="extract-slider-group">
             <Slider
               min={0}

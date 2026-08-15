@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Modal, Typography } from "antd";
-const { Text } = Typography;
 import type { Color } from "../../types/color";
 import { Answers } from "./Answers";
 import { CheckOutlined } from '@ant-design/icons'
@@ -14,9 +13,14 @@ const TURN = 20;
 type AbilityId = "敏慧" | "安宁" | "宿命";
 const ABILITIES: AbilityId[] = ["敏慧", "安宁", "宿命"];
 const ABILITY_DESC: Record<AbilityId, string> = {
-  敏慧: "更换当前题目，并排除一个错误选项。",
-  安宁: "随机显示正确答案中的一个字。",
-  宿命: "直接使当前正确选项显现。",
+  敏慧: "更换当前颜色，并排除一个错误选项。",
+  安宁: "随机显示正确选项中的一个字。",
+  宿命: "使当前正确选项直接显现。",
+};
+const ABILITY_TIP: Record<AbilityId, string> = {
+  敏慧: "绞尽脑汁时，不妨转换一下思路。",
+  安宁: "静下心来，你在标签之下找到了一点线索。",
+  宿命: "你记得这个颜色，它使你印象深刻。",
 };
 // 能力栏位数量（最多同时持有 3 个能力，可重复）
 const ABILITY_SLOTS = 3;
@@ -462,7 +466,7 @@ function GamePage() {
                 <button
                   className="game-forget-badge"
                   onClick={() => setForgetModalOpen(true)}
-                  title="遗忘"
+                  title="使随机一个选项的文字消失"
                 >
                   遗忘
                 </button>
@@ -519,9 +523,12 @@ function GamePage() {
             closeIcon={null}
             width={360}
           >
-            <p className="game-confirm-name">{confirmAbility ?? ""}</p>
-            <p className="game-confirm-desc">
+            <p className="game-confirm-name">{`灵感·${confirmAbility}`}</p>
+            <p className="game-confirm-tip">
               {confirmAbility ? ABILITY_DESC[confirmAbility] : ""}
+            </p>
+            <p className="game-confirm-desc">
+              {confirmAbility ? ABILITY_TIP[confirmAbility] : ""}
             </p>
           </Modal>
 
@@ -537,10 +544,13 @@ function GamePage() {
             closeIcon={null}
             width={360}
           >
+            <p className="game-confirm-name">遗忘</p>
+            <p className="game-confirm-tip">
+              随机一个选项的文字消失。
+            </p>
             <p className="game-confirm-desc">
-              明明已经在嘴边，但你始终想不起来染剂的名字
-              <br />
-              <Text strong>你忘了</Text>
+              明明已经在嘴边，但你始终想不出那个名字。
+              <p style={{fontWeight: 'bold'}}>你忘了。</p>
             </p>
           </Modal>
         </div>

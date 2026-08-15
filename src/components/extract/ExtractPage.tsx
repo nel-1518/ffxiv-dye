@@ -383,7 +383,7 @@ function ExtractPage() {
                 onClick={handleExtract}
                 loading={loading}
               >
-                提取颜色
+                取色
               </Button>
             {result && result.palette.length > 0 && (
               <Button

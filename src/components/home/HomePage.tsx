@@ -12,7 +12,7 @@ import {
   CaretRightOutlined,
   PictureOutlined,
   BgColorsOutlined,
-  ThunderboltOutlined,
+  BulbOutlined,
 } from '@ant-design/icons'
 import { useAutoSwitch, getAutoPlayState, saveAutoPlayState } from '../../hooks/useAutoSwitch'
 
@@ -79,16 +79,16 @@ function HomePage() {
 
             <button className="nav-card" onClick={() => navigate('/scheme')}>
               <span className="nav-card-icon">
-                <BgColorsOutlined />
+                <BulbOutlined />
               </span>
               <span className="nav-card-text">配色推荐</span>
             </button>
 
             <button className="nav-card" onClick={() => navigate('/game')}>
               <span className="nav-card-icon">
-                <ThunderboltOutlined />
+                <BgColorsOutlined />
               </span>
-              <span className="nav-card-text">小游戏</span>
+              <span className="nav-card-text">猜色游戏</span>
             </button>
           </nav>
         </div>
