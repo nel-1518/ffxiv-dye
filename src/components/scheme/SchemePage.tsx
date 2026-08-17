@@ -27,23 +27,23 @@ const MODE_NAMES: Record<SchemeMode, string> = {
   complementary: '互补色 (180°)',
   analogous: '类似色 (±30°)',
   triadic: '三角色 (120°)',
+  monochromatic: '单色 (明度变化)',
   'split-complementary': '分裂互补色 (150°/210°)',
   tetradic: '四方色 (90°)',
-  monochromatic: '单色 (明度变化)',
 }
 
 const ALL_MODES: SchemeMode[] = [
   'smart',
   'complementary',
   'triadic',
+  'monochromatic',
   'analogous',
   'split-complementary',
   'tetradic',
-  'monochromatic',
 ]
 
 /** 默认展示的模式（综合 / 互补 / 三角） */
-const VISIBLE_MODES: SchemeMode[] = ['smart', 'complementary', 'triadic']
+const VISIBLE_MODES: SchemeMode[] = ['smart', 'complementary', 'triadic', 'monochromatic']
 
 const SCHEME_COUNT = 5
 
