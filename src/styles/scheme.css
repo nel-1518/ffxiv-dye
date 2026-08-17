@@ -20,11 +20,20 @@
 
 .scheme-container {
   width: 100%;
-  max-width: 720px;
+  max-width: 1000px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+  align-items: flex-start;
   gap: 20px;
+}
+
+/* 未生成配色时，颜色池独占一行并居中 */
+.scheme-container > .scheme-pool-section:only-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 100%;
+  max-width: 720px;
 }
 
 /* ---------- 分区标题 ---------- */
@@ -54,13 +63,19 @@
     box-shadow var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 颜色池内 Tabs 标签左对齐 */
-.scheme-pool-section .ant-tabs-nav {
-  margin-bottom: 14px;
+/* 颜色池内 Tabs 纵向排列（左侧导航） */
+.scheme-pool-section .ant-tabs-left > .ant-tabs-nav,
+.scheme-pool-section .ant-tabs-left > div > .ant-tabs-nav {
+  min-width: 92px;
 }
 
-.scheme-pool-section .ant-tabs-nav-list {
-  justify-content: flex-start;
+.scheme-pool-section .ant-tabs-left .ant-tabs-tab {
+  padding: 10px 4px;
+}
+
+.scheme-pool-section .ant-tabs-left .ant-tabs-tab-btn {
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .scheme-pool {
@@ -401,15 +416,24 @@
 }
 
 /* ==============================
+   响应式 — 平板/手机 ≤900px（左右布局改为上下）
+   ============================== */
+
+@media (max-width: 900px) {
+  .scheme-container {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+}
+
+/* ==============================
    响应式 — 平板/手机 ≤700px
    ============================== */
 
 @media (max-width: 700px) {
-  .scheme-container {
-    max-width: 100%;
-    gap: 16px;
-  }
-
   .scheme-pool-section {
     padding: 18px;
     border-radius: 18px;

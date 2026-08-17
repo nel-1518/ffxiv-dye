@@ -181,6 +181,7 @@ function SchemePage() {
             染剂颜色
           </h3>
           <Tabs
+            tabPlacement="start"
             items={groupedColors.map(({ type, colors }) => ({
               key: type,
               label: `${TYPE_LABELS[type] || type}`,
