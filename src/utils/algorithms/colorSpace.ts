@@ -2,6 +2,7 @@
 
 import type { HslColor, RgbPixel, LabPixel } from './types'
 import { rgbToLab } from '../color'
+import { formatHex, hsl } from 'culori'
 
 /**
  * Linear → sRGB（钳位到 0-255）
@@ -11,26 +12,14 @@ export function linearToSrgb(c: number): number {
   return Math.round(Math.max(0, Math.min(1, s)) * 255)
 }
 
+/** HslColor 为百分比语义（h/s/l 均为整数 0-100 或 h 0-360） */
 export function rgbToHsl(r: number, g: number, b: number): HslColor {
-  r /= 255; g /= 255; b /= 255
-  const max = Math.max(r, g, b), min = Math.min(r, g, b)
-  const l = (max + min) / 2
-  let h = 0, s = 0
-  if (max !== min) {
-    const d = max - min
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-    switch (max) {
-      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break
-      case g: h = ((b - r) / d + 2) / 6; break
-      case b: h = ((r - g) / d + 4) / 6; break
-    }
-  }
-  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) }
+  const c = hsl({ mode: 'rgb', r: r / 255, g: g / 255, b: b / 255 })
+  return { h: Math.round(c.h ?? 0), s: Math.round(c.s * 100), l: Math.round(c.l * 100) }
 }
 
 export function rgbToHex(r: number, g: number, b: number): string {
-  const clamp = (v: number) => Math.max(0, Math.min(255, Math.round(v)))
-  return '#' + [r, g, b].map(v => clamp(v).toString(16).padStart(2, '0').toUpperCase()).join('')
+  return formatHex({ mode: 'rgb', r: r / 255, g: g / 255, b: b / 255 }).toUpperCase()
 }
 
 /**

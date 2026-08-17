@@ -1,4 +1,6 @@
-/* ===== 染剂 LAB 预计算 + 最近邻匹配 ===== */
+/* ===== 染剂 LAB 预计算 + 最近邻匹配 =====
+ * lab 为 D65 CIELAB (lab65)，与 color.ts 的 rgbToLab / ciede2000 保持一致
+ */
 
 import dyeData from '../../data/colors.json'
 import type { PaletteColor } from '../../utils/algorithms/types'

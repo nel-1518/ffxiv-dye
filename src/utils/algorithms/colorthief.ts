@@ -21,6 +21,7 @@ export function extractColors(
   const colors = getPaletteSync(image, {
     colorCount: effectiveColorCount,
     quality: params.quality || 10,
+    gamut: 'auto',
   })
 
   if (!colors || colors.length === 0) {
