@@ -264,12 +264,20 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------- 4 个结果卡片纵向排列 ---------- */
+/* ---------- 结果卡片纵向排列 ---------- */
 
 .scheme-results-grid {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+/* ---------- "更多 / 收起"按钮 ---------- */
+
+.scheme-results-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
 }
 
 /* ---------- 配色卡片 ---------- */
