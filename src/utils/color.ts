@@ -4,7 +4,7 @@
  * 手写的 RGB→XYZ→LAB、CIEDE2000、WCAG 亮度/对比度已由 culori 接管。
  */
 
-import { differenceCiede2000, hsl, lab65, lrgb, rgb, wcagContrast, wcagLuminance } from 'culori'
+import { differenceCiede2000, hsl, lab65, lch, lrgb, rgb, wcagContrast, wcagLuminance } from 'culori'
 
 export interface Rgb {
   r: number
@@ -23,6 +23,12 @@ export interface Lab {
   l: number
   a: number
   b: number
+}
+
+export interface Lch {
+  l: number
+  c: number
+  h: number
 }
 
 /* ---------- hex → RGB (0-255) ---------- */
@@ -85,6 +91,39 @@ export function hueDiff(h1: number, h2: number): number {
 export function rgbToLab(r: number, g: number, b: number): Lab {
   const c = lab65({ mode: 'rgb', r: r / 255, g: g / 255, b: b / 255 })
   return { l: c.l, a: c.a, b: c.b }
+}
+
+/* ---------- RGB → LCH（感知均匀） ---------- */
+
+/**
+ * RGB → LCH（Culori 基于 D50 白点的 lch）。
+ * LCH 是感知均匀的色彩空间：同样的色相差/明度差在所有色相区域看起来一致，
+ * 参考 Codrops《Coloring With Code》(2021) 的配色方法。
+ * 灰色时 culori 的 h 为 undefined，统一兜底为 0。
+ */
+export function rgbToLch(r: number, g: number, b: number): Lch {
+  const c = lch({ mode: 'rgb', r: r / 255, g: g / 255, b: b / 255 })
+  return { l: c.l, c: c.c, h: c.h ?? 0 }
+}
+
+/* ---------- 带权 LCH 感知距离 ---------- */
+
+/**
+ * 带权 LCH 欧氏距离（感知均匀）。
+ * 色相差按 CIE 标准 ΔH = 2√(C1·C2)·sin(Δh/2) 处理（环形、随彩度缩放），
+ * 明度/彩度差直算。任一彩度为 0（灰色）时色相项自然退化为 0。
+ * @param weights - 可选权重 { wL, wC, wH }，默认 { 1, 1, 1 }
+ */
+export function lchDistance(
+  l1: number, c1: number, h1: number,
+  l2: number, c2: number, h2: number,
+  weights: { wL?: number; wC?: number; wH?: number } = {},
+): number {
+  const { wL = 1, wC = 1, wH = 1 } = weights
+  const dL = l1 - l2
+  const dC = c1 - c2
+  const dH = 2 * Math.sqrt(Math.max(0, c1) * Math.max(0, c2)) * Math.sin((hueDiff(h1, h2) * Math.PI) / 360)
+  return Math.sqrt(wL * dL * dL + wC * dC * dC + wH * dH * dH)
 }
 
 /* ---------- CIEDE2000 色差公式 ---------- */

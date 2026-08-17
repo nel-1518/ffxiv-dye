@@ -1,9 +1,9 @@
 import { useState, useMemo, useCallback } from 'react'
 import { Button, Tooltip, Tabs } from 'antd'
-import { CheckOutlined, ColumnWidthOutlined, ExperimentOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'
+import { CheckOutlined, ColumnWidthOutlined, DownOutlined, ExperimentOutlined, EyeOutlined, EyeInvisibleOutlined, UpOutlined } from '@ant-design/icons'
 import colorData from '../../data/colors.json'
 import type { Color } from '../../types/color'
-import { selectSchemeColors, type SchemeMode } from '../../utils/schemeAlgorithm'
+import { selectSchemeColors, buildColorPool, type SchemeMode } from '../../utils/schemeAlgorithm'
 
 /* ---------- 常量 ---------- */
 
@@ -27,9 +27,23 @@ const MODE_NAMES: Record<SchemeMode, string> = {
   complementary: '互补色 (180°)',
   analogous: '类似色 (±30°)',
   triadic: '三角色 (120°)',
+  'split-complementary': '分裂互补色 (150°/210°)',
+  tetradic: '四方色 (90°)',
+  monochromatic: '单色 (明度变化)',
 }
 
-const ALL_MODES: SchemeMode[] = ['smart', 'complementary', 'analogous', 'triadic']
+const ALL_MODES: SchemeMode[] = [
+  'smart',
+  'complementary',
+  'triadic',
+  'analogous',
+  'split-complementary',
+  'tetradic',
+  'monochromatic',
+]
+
+/** 默认展示的模式（综合 / 互补 / 三角） */
+const VISIBLE_MODES: SchemeMode[] = ['smart', 'complementary', 'triadic']
 
 const SCHEME_COUNT = 5
 
@@ -38,8 +52,6 @@ interface SchemeResultItem {
   mode: SchemeMode
   modeLabel: string
   colors: string[]
-  contrastRatio: number
-  wcagLevel: string
 }
 
 /* ---------- 工具 ---------- */
@@ -134,9 +146,10 @@ function SchemePage() {
   const [results, setResults] = useState<SchemeResultItem[] | null>(null)
   const [viewMode, setViewMode] = useState<'strip' | 'circle'>('strip')
   const [showLabels, setShowLabels] = useState(false)
+  const [showAll, setShowAll] = useState(false)
 
-  // 颜色池
-  const pool = useMemo(() => COLORS.map((c) => c.color), [])
+  // 颜色池（预计算色空间索引，供算法直接使用）
+  const pool = useMemo(() => buildColorPool(COLORS.map((c) => c.color)), [])
 
   // 颜色按 type 分组
   const groupedColors = useMemo(() => {
@@ -156,7 +169,7 @@ function SchemePage() {
     })
   }, [])
 
-  // 生成全部 4 个模式配色
+  // 生成全部 7 个模式配色
   const handleGenerate = useCallback(() => {
     const items: SchemeResultItem[] = ALL_MODES.map((mode) => {
       const res = selectSchemeColors(pool, mode, SCHEME_COUNT, selectedColors)
@@ -164,8 +177,6 @@ function SchemePage() {
         mode,
         modeLabel: MODE_NAMES[mode],
         colors: res.colors,
-        contrastRatio: res.contrastRatio,
-        wcagLevel: res.wcagLevel,
       }
     })
     setResults(items)
@@ -238,7 +249,7 @@ function SchemePage() {
           </div>
         </section>
 
-        {/* 结果展示（4 个卡片） */}
+        {/* 结果展示（默认 3 个，点击"更多"展开全部 7 个） */}
         {results && (
           <section className="scheme-results-section">
             <div className="scheme-results-header">
@@ -269,9 +280,21 @@ function SchemePage() {
               </div>
             </div>
             <div className="scheme-results-grid">
-              {results.map((item) => (
-                <SchemeCard key={item.mode} item={item} viewMode={viewMode} showLabels={showLabels} />
-              ))}
+              {(showAll ? ALL_MODES : VISIBLE_MODES).map((mode) => {
+                const item = results.find((r) => r.mode === mode)
+                return item ? (
+                  <SchemeCard key={item.mode} item={item} viewMode={viewMode} showLabels={showLabels} />
+                ) : null
+              })}
+            </div>
+            <div className="scheme-results-more">
+              <Button
+                size="small"
+                onClick={() => setShowAll((v) => !v)}
+                icon={showAll ? <UpOutlined /> : <DownOutlined />}
+              >
+                {showAll ? '收起' : '更多'}
+              </Button>
             </div>
             <p className="scheme-disclaimer">
               算法自动生成配色，不一定可用，仅供参考。
