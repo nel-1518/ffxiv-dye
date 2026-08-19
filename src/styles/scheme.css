@@ -49,6 +49,19 @@
   transition: border-color var(--transition-speed, 0.55s) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 颜色池标题行（标题 + 金属色系开关按钮） */
+.scheme-pool-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.scheme-pool-header .scheme-section-title {
+  margin: 0;
+}
+
 /* ==============================
    颜色池
    ============================== */

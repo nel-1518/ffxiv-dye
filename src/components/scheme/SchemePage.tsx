@@ -1,13 +1,17 @@
 import { useState, useMemo, useCallback } from 'react'
 import { Button, Tooltip, Tabs } from 'antd'
-import { CheckOutlined, ColumnWidthOutlined, DownOutlined, ExperimentOutlined, EyeOutlined, EyeInvisibleOutlined, UpOutlined } from '@ant-design/icons'
+import { CheckOutlined, ColumnWidthOutlined, DownOutlined, ExperimentOutlined, EyeOutlined, EyeInvisibleOutlined, StarOutlined, UpOutlined } from '@ant-design/icons'
 import colorData from '../../data/colors.json'
+import metallicData from '../../data/metallic-colors.json'
 import type { Color } from '../../types/color'
 import { selectSchemeColors, buildColorPool, type SchemeMode } from '../../utils/schemeAlgorithm'
 
 /* ---------- 常量 ---------- */
 
 const COLORS: Color[] = colorData as Color[]
+const METALLIC_COLORS: Color[] = metallicData as Color[]
+/** 普通色 + 金属色（用于生成结果中反查名称） */
+const ALL_COLORS: Color[] = [...COLORS, ...METALLIC_COLORS]
 
 /** type 显示名称映射 */
 const TYPE_LABELS: Record<string, string> = {
@@ -18,6 +22,7 @@ const TYPE_LABELS: Record<string, string> = {
   '绿': '绿色系',
   '蓝': '蓝色系',
   '紫': '紫色系',
+  '金属': '金属色系',
 }
 
 const TYPE_ORDER = ['灰', '红', '棕', '黄', '绿', '蓝', '紫']
@@ -112,7 +117,7 @@ function SchemeCard({ item, viewMode, showLabels }: { item: SchemeResultItem; vi
                 <>
                   <span className="scheme-strip__hex">{hex.toUpperCase()}</span>
                   <span className="scheme-strip__name">
-                    {COLORS.find((c) => c.color === hex)?.name ?? ''}
+                    {ALL_COLORS.find((c) => c.color === hex)?.name ?? ''}
                   </span>
                 </>
               )}
@@ -126,7 +131,7 @@ function SchemeCard({ item, viewMode, showLabels }: { item: SchemeResultItem; vi
               key={i}
               className="scheme-circle-swatch color-tip"
               style={{ backgroundColor: hex }}
-              data-tip={`${COLORS.find((c) => c.color === hex)?.name ?? ''} ${hex.toUpperCase()}`}
+              data-tip={`${ALL_COLORS.find((c) => c.color === hex)?.name ?? ''} ${hex.toUpperCase()}`}
             >
               {showLabels && (
                 <span className="scheme-circle-swatch__hex">{hex.toUpperCase()}</span>
@@ -147,19 +152,25 @@ function SchemePage() {
   const [viewMode, setViewMode] = useState<'strip' | 'circle'>('strip')
   const [showLabels, setShowLabels] = useState(false)
   const [showAll, setShowAll] = useState(false)
+  const [showMetallic, setShowMetallic] = useState(false)
+
+  // 当前参与选色的颜色集合（开启金属色系后包含金属色）
+  const activeColors = showMetallic ? ALL_COLORS : COLORS
 
   // 颜色池（预计算色空间索引，供算法直接使用）
-  const pool = useMemo(() => buildColorPool(COLORS.map((c) => c.color)), [])
+  const pool = useMemo(() => buildColorPool(activeColors.map((c) => c.color)), [showMetallic])
 
-  // 颜色按 type 分组
+  // 颜色按 type 分组（开启金属色系后追加金属 tab）
   const groupedColors = useMemo(() => {
     const map: Record<string, Color[]> = {}
     COLORS.forEach((c) => {
       if (!map[c.type]) map[c.type] = []
       map[c.type].push(c)
     })
-    return TYPE_ORDER.filter((t) => map[t]).map((t) => ({ type: t, colors: map[t] }))
-  }, [])
+    const groups = TYPE_ORDER.filter((t) => map[t]).map((t) => ({ type: t, colors: map[t] }))
+    if (showMetallic) groups.push({ type: '金属', colors: METALLIC_COLORS })
+    return groups
+  }, [showMetallic])
 
   const handleSwatchClick = useCallback((hex: string) => {
     setSelectedColors((prev) => {
@@ -168,6 +179,16 @@ function SchemePage() {
       return [...prev, hex]
     })
   }, [])
+
+  // 切换金属色系：关闭时清掉已选中的金属色，避免配色池中找不到基准色
+  const handleToggleMetallic = useCallback(() => {
+    setSelectedColors((prev) => {
+      if (!showMetallic) return prev // 开启时保留当前已选
+      const metallicHexes = new Set(METALLIC_COLORS.map((c) => c.color))
+      return prev.filter((h) => !metallicHexes.has(h))
+    })
+    setShowMetallic((v) => !v)
+  }, [showMetallic])
 
   // 生成全部 7 个模式配色
   const handleGenerate = useCallback(() => {
@@ -188,9 +209,19 @@ function SchemePage() {
 
         {/* 颜色池（Tabs 切换分类） */}
         <section className="scheme-pool-section">
-          <h3 className="scheme-section-title">
-            染剂颜色
-          </h3>
+          <div className="scheme-pool-header">
+            <h3 className="scheme-section-title">
+              染剂颜色
+            </h3>
+            <Button
+              size="small"
+              type={showMetallic ? 'primary' : 'default'}
+              icon={<StarOutlined />}
+              onClick={handleToggleMetallic}
+            >
+              金属色系
+            </Button>
+          </div>
           <Tabs
             tabPlacement="start"
             items={groupedColors.map(({ type, colors }) => ({
@@ -222,14 +253,14 @@ function SchemePage() {
                       className="scheme-pool-chip color-tip"
                       style={{ backgroundColor: hex }}
                       onClick={() => handleSwatchClick(hex)}
-                      data-tip={`${COLORS.find((c) => c.color === hex)?.name ?? hex} ${hex.toUpperCase()}`}
+                      data-tip={`${ALL_COLORS.find((c) => c.color === hex)?.name ?? hex} ${hex.toUpperCase()}`}
                     />
                   ))}
                 </div>
                 <div className="scheme-pool-footer__names">
                   {selectedColors.map((hex) => (
                     <span key={hex} className="scheme-pool-name">
-                      {COLORS.find((c) => c.color === hex)?.name ?? hex}
+                      {ALL_COLORS.find((c) => c.color === hex)?.name ?? hex}
                     </span>
                   ))}
                 </div>
