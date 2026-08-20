@@ -190,6 +190,7 @@
 .extract-control-row {
   display: flex;
   align-items: center;
+  height: 34px;
   gap: 12px;
 }
 
@@ -204,7 +205,7 @@
 .extract-slider-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
 }
 

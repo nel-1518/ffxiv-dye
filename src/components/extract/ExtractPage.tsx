@@ -67,6 +67,7 @@ function ExtractPage() {
   const [mergeThreshold, setMergeThreshold] = useState(10)
   const [filterExtreme, setFilterExtreme] = useState(false)
   const [quality, setQuality] = useState(10)
+  const [includeMetallic, setIncludeMetallic] = useState(false)
 
   // 动态定K信息
   const [histogramInfo, setHistogramInfo] = useState<{ k: number; m: number } | null>(null)
@@ -253,9 +254,10 @@ function ExtractPage() {
     setMergeThreshold(10)
     setFilterExtreme(false)
     setQuality(10)
+    setIncludeMetallic(false)
     setAlgorithmKey(algorithms[0]?.key ?? 'colorthief')
     message.success('已重置')
-  }, [algorithms, setImageDataUrl, setImageLoaded, setResult, setHistogramInfo, setViewMode, setDynamicK, setInitialK, setMergeMode, setTargetCount, setMergeThreshold, setFilterExtreme, setQuality, setAlgorithmKey])
+  }, [algorithms, setImageDataUrl, setImageLoaded, setResult, setHistogramInfo, setViewMode, setDynamicK, setInitialK, setMergeMode, setTargetCount, setMergeThreshold, setFilterExtreme, setQuality, setIncludeMetallic, setAlgorithmKey])
 
   /* ---------- 参数变更自动重新提取 ---------- */
 
@@ -341,8 +343,10 @@ function ExtractPage() {
                   <ColorThiefPanel
                     targetCount={targetCount}
                     quality={quality}
+                    includeMetallic={includeMetallic}
                     onTargetCountChange={setTargetCount}
                     onQualityChange={setQuality}
+                    onIncludeMetallicChange={setIncludeMetallic}
                     onExtract={handleExtract}
                   />
                 ),
@@ -358,6 +362,7 @@ function ExtractPage() {
                     targetCount={targetCount}
                     mergeThreshold={mergeThreshold}
                     filterExtreme={filterExtreme}
+                    includeMetallic={includeMetallic}
                     histogramInfo={histogramInfo}
                     onDynamicKChange={v => { setDynamicK(v); if (!v) setHistogramInfo(null) }}
                     onInitialKChange={setInitialK}
@@ -365,6 +370,7 @@ function ExtractPage() {
                     onTargetCountChange={setTargetCount}
                     onMergeThresholdChange={setMergeThreshold}
                     onFilterExtremeChange={setFilterExtreme}
+                    onIncludeMetallicChange={setIncludeMetallic}
                     onRunExtraction={(k) => {
                       if (cachedLabPixels.current) runExtraction(cachedLabPixels.current, k)
                     }}
@@ -403,7 +409,7 @@ function ExtractPage() {
         {result && result.palette.length > 0 && (
           viewMode === 'palette'
             ? <PaletteGrid palette={result.palette} onCopyColor={copyColor} />
-            : <DyeMatchView palette={result.palette} />
+            : <DyeMatchView palette={result.palette} includeMetallic={includeMetallic} />
         )}
       </div>
 

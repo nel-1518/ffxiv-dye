@@ -8,6 +8,8 @@ import { relativeLuminance, rgbRelativeLuminance } from '../../utils/color'
 
 interface DyeMatchViewProps {
   palette: PaletteColor[]
+  /** 匹配染剂时是否允许包含金属色 */
+  includeMetallic?: boolean
 }
 
 interface CurvePath {
@@ -17,13 +19,13 @@ interface CurvePath {
   dyeKey: string
 }
 
-export default function DyeMatchView({ palette }: DyeMatchViewProps) {
+export default function DyeMatchView({ palette, includeMetallic = false }: DyeMatchViewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [curves, setCurves] = useState<CurvePath[]>([])
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
-  /* 同步计算匹配 — palette 变化时自动重算 */
-  const matches = useMemo(() => findDyeMatches(palette), [palette])
+  /* 同步计算匹配 — palette / includeMetallic 变化时自动重算 */
+  const matches = useMemo(() => findDyeMatches(palette, includeMetallic), [palette, includeMetallic])
 
   /* 获取匹配到同一染剂的 index 集合 */
   const siblingsOf = useCallback((idx: number): Set<number> => {

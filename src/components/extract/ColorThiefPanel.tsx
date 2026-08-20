@@ -1,10 +1,13 @@
-import { Slider } from 'antd'
+
+import { Slider, Switch } from 'antd'
 
 interface ColorThiefPanelProps {
   targetCount: number
   quality: number
+  includeMetallic: boolean
   onTargetCountChange: (v: number) => void
   onQualityChange: (v: number) => void
+  onIncludeMetallicChange: (v: boolean) => void
   onExtract: () => void
 }
 
@@ -12,8 +15,10 @@ interface ColorThiefPanelProps {
 export default function ColorThiefPanel({
   targetCount,
   quality,
+  includeMetallic,
   onTargetCountChange,
   onQualityChange,
+  onIncludeMetallicChange,
   onExtract,
 }: ColorThiefPanelProps) {
   return (
@@ -47,6 +52,16 @@ export default function ColorThiefPanel({
           />
           <span className="extract-slider-value">{quality}</span>
         </div>
+      </div>
+
+      {/* 包含金属色 */}
+      <div className="extract-control-row">
+        <span className="extract-control-label">包含金属色</span>
+        <Switch
+          checked={includeMetallic}
+          onChange={v => onIncludeMetallicChange(v)}
+          size="small"
+        />
       </div>
     </>
   )

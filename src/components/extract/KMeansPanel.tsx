@@ -7,6 +7,7 @@ interface KMeansPanelProps {
   targetCount: number;
   mergeThreshold: number;
   filterExtreme: boolean;
+  includeMetallic: boolean;
   histogramInfo: { k: number; m: number } | null;
   onDynamicKChange: (v: boolean) => void;
   onInitialKChange: (v: number) => void;
@@ -14,6 +15,7 @@ interface KMeansPanelProps {
   onTargetCountChange: (v: number) => void;
   onMergeThresholdChange: (v: number) => void;
   onFilterExtremeChange: (v: boolean) => void;
+  onIncludeMetallicChange: (v: boolean) => void;
   onRunExtraction: (k: number) => void;
   onAutoExtract: () => void;
 }
@@ -26,6 +28,7 @@ export default function KMeansPanel({
   targetCount,
   mergeThreshold,
   filterExtreme,
+  includeMetallic,
   histogramInfo,
   onDynamicKChange,
   onInitialKChange,
@@ -33,6 +36,7 @@ export default function KMeansPanel({
   onTargetCountChange,
   onMergeThresholdChange,
   onFilterExtremeChange,
+  onIncludeMetallicChange,
   onRunExtraction,
   onAutoExtract,
 }: KMeansPanelProps) {
@@ -141,6 +145,16 @@ export default function KMeansPanel({
         <Switch
           checked={filterExtreme}
           onChange={(v) => onFilterExtremeChange(v)}
+          size="small"
+        />
+      </div>
+
+      {/* 包含金属色 */}
+      <div className="extract-control-row">
+        <span className="extract-control-label">包含金属色</span>
+        <Switch
+          checked={includeMetallic}
+          onChange={(v) => onIncludeMetallicChange(v)}
           size="small"
         />
       </div>
